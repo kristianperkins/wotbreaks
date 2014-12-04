@@ -25,13 +25,13 @@ function Ball(id, velocity) {
         var pos = this.dom.position();
         var scrollTop = $(document).scrollTop();
         var topBound = $('table.matrix-content').offset().top;
-        var someTr = $('tr.deals').first();
+        var someTr = $('tr.grid-header').last();
         var leftBound = someTr.offset().left;
         var rightBound = leftBound + someTr.width();
         if (pos.top <= topBound) {
             this.v.y = 1;
         } else if (pos.top >= $(window).height() + scrollTop) {
-            console.log('fuck uuu');
+            console.log('woe to the fallen');
             this.v.y = -1;
         }
         if (pos.left <= leftBound) {
