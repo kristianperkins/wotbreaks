@@ -5,7 +5,7 @@ console.log("AAAAAAAAAh");
 
 var ball;
 var running = true;
-var level = 1;
+var level = 0;
 var score = 0;
 var debugStep = false;
 
@@ -155,8 +155,8 @@ function main() {
         $('.results-header').hide();
         $('#hotel-deals').hide();
         $('.results-count').hide();
-        $('table.matrix-content tr').slice(1).hide();
-        $('table.matrix-content tr.deals:not(tr.wothotel)').slice(0, 4).show();
+        level = 0;
+        nextLevel();
         console.log(e);
         if (init) {
             return; //fml
@@ -181,7 +181,8 @@ function main() {
 			overflow: 'hide'
 		});
         $(".shortlist-summary").hide();
-        $(".shortlist-summary").after("<div class='breakout-score' style='text-align: right;'>SCORE<b>0</b></div>");
+        $(".shortlist-summary").after("<div class='breakout-score' style='text-align: right; float: right; padding-right: 2em;'>SCORE<b>0</b></div>");
+        $(".shortlist-summary").after("<div class='breakout-level' style='text-align: right; float: right;'>LEVEL<b>1</b></div>");
 		//addMouseMovement();
 		//addKeyboardMovement();
         console.log("lIOADEDED!");
@@ -249,7 +250,18 @@ function main() {
                 );*/
             }
         }
+
+        $(window).click(function() {
+            nextLevel();
+        });
 	}
+
+function nextLevel() {
+    $('table.matrix-content tr:not(.grid-header)').hide();
+    $('table.matrix-content tr.deals:not(tr.wothotel)').slice(level * 4, (level + 1) * 4).show();
+    level++;
+    $(".breakout-level  b").text(level);
+}
 
     function step(delay) {
         ball.update();
