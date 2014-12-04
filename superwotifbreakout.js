@@ -145,24 +145,24 @@ function main() {
     //
     // initialise dom and scroll top etc
     //
-    $('#main').height($(window).height());
     var init = false;
     $('html, body').animate({
         //scrollTop: $("form.dateForm").offset().top
         scrollTop: 0
     }, 1500, function(e) {
-        $('div.results-search').hide();
-        $('#map-button').hide();
-        $('.w-toolbar').hide();
-        $('.results-header').hide();
-        $('#hotel-deals').hide();
-        $('.results-count').hide();
         level = 0;
         nextLevel();
+        $('div.results-search').slideUp('slow');
+        $('#map-button').slideUp('slow');
+        $('.w-toolbar').slideUp('slow');
+        $('.results-header').slideUp('slow');
+        $('#hotel-deals').slideUp('slow');
+        $('.results-count').slideUp('slow');
         console.log(e);
         if (init) {
             return; //fml
         }
+        $('body').height(window.innerHeight);
 		$("<div id='paddle' style='background:pink; width: 200px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
 		$("<div id='ball' class='ball' style='width: 20px; height:20px; top:15px; bottom:15px; position: fixed; z-index=1000000; border-radius: 50%; margin: 0; background: radial-gradient(circle at 7px 7px, #CCC, #000);'></div>").appendTo("body");
         init = true;
