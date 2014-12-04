@@ -75,15 +75,9 @@ function Ball(id, velocity) {
             var trId = '#' + b.id;
             var collided = false;
             self.dom.collision(trId + ' td.weekday, ' + trId + ' td.weekend').each(function(idx, elem) {
+                $elem = $(elem);
                 collided = true;
                 if (!elem.hit) {
-                    // add to score
-                    score += +$(elem).text();
-                    $(".breakout-score b").text(score);
-                    elem.hit = true;
-                    console.log(elem);
-                    var pos = $(elem).position();
-                    //$(elem).toggle();
                     // ball response
                     var p = self.collisionPoint(elem);
                     console.log("collision corner: ", p);
@@ -110,8 +104,17 @@ function Ball(id, velocity) {
                         }
                         //$(elem).addClass('anim sold');
                     }
-                    $(elem).attr('class', 'anim sold').html('SOLD');
-                    //elem.style.background = 'transparent';
+                    if ($elem.hasClass("hotdeal")) {
+                        $elem.removeClass("hotdeal");
+                    } else {
+                        // add to score
+                        score += +$(elem).text();
+                        $(".breakout-score b").text(score);
+                        elem.hit = true;
+                        $elem.attr('class', 'anim sold').html('SOLD');
+                    }
+                    console.log(elem);
+                    var pos = $(elem).position();
                 }
                 if (debugStep && !confirm("hit")) {
                   running = false;
@@ -173,7 +176,7 @@ function main() {
 			overflow: 'hide'
 		});
         $(".shortlist-summary").hide();
-        $(".shortlist-summary").after("<div class='breakout-score' style='text-align: right;'><b>0</b></div>");
+        $(".shortlist-summary").after("<div class='breakout-score' style='text-align: right;'>SCORE<b>0</b></div>");
 		//addMouseMovement();
 		//addKeyboardMovement();
         console.log("lIOADEDED!");
