@@ -102,7 +102,6 @@ function Ball(id, velocity) {
                             console.log("changing x direction..");
                             changeX = true;
                         }
-                        //$(elem).addClass('anim sold');
                     }
                     if ($elem.hasClass("hotdeal")) {
                         $elem.removeClass("hotdeal");
@@ -128,6 +127,9 @@ function Ball(id, velocity) {
             if (changeY) {
                 self.v.y *= -1;
                 console.log("changing y ", self.v.y);
+            }
+            if ($('tr.deals:visible td:not(.sold)').not('.summary').length == 0) {
+                nextLevel();
             }
         });
         this.dom.collision('#paddle').each(function(idx, elem) {
