@@ -5,6 +5,7 @@ console.log("AAAAAAAAAh");
 
 var ball;
 var running = true;
+var level = 1;
 var score = 0;
 var debugStep = false;
 
@@ -12,7 +13,6 @@ function Point(x, y) {
     this.x = x;
     this.y = y;
 }
-
 
 
 function Ball(id, velocity) {
@@ -143,15 +143,20 @@ function main() {
     //
     // initialise dom and scroll top etc
     //
-    $('table.matrix-content tr').slice(1).hide();
-    $('table.matrix-content tr.deals:not(tr.wothotel)').slice(0, 4).show();
-    if ($('#main').height() < 2000) {
-        $('#main').height(2000);
-    }
+    $('#main').height($(window).height());
     var init = false;
     $('html, body').animate({
-        scrollTop: $("form.dateForm").offset().top
+        //scrollTop: $("form.dateForm").offset().top
+        scrollTop: 0
     }, 1500, function(e) {
+        $('div.results-search').hide();
+        $('#map-button').hide();
+        $('.w-toolbar').hide();
+        $('.results-header').hide();
+        $('#hotel-deals').hide();
+        $('.results-count').hide();
+        $('table.matrix-content tr').slice(1).hide();
+        $('table.matrix-content tr.deals:not(tr.wothotel)').slice(0, 4).show();
         console.log(e);
         if (init) {
             return; //fml
