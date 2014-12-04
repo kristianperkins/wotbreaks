@@ -1,0 +1,1 @@
+ta href="javascript:var a,b,c=['https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js','http://localhost://superwotifbreakout.js']; for(a=0;a!=c.length;a++){b=document.createElement('script');b.src=c[a];document.body.appendChild(b);}void(0);">Super Wotif Breakout!</a>
