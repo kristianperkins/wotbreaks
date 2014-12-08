@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<head>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<style type="text/css">
+#m {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: lightgrey;
+}
+#ball {
+    width: 20px;
+    height: 20px;
+    background-color: pink;
+    position: fixed;
+    top: 100px; 
+    left: 100px;
+    z-index: 100;
+}
+div.brick {
+    background: dodgerblue;
+    width: 100px;
+    height: 100px;
+}
+</style>
+</head>
+<body>
+<div id="m">what?
+<div id="ball">yeah</div>
+</div>
+
+<script type="text/javascript">
+
+    function randomRects() {
+        for (var i = 0; i < 50; i++) {
+            var thing = $('<div class="brick">brick</div>').appendTo("#m");
+            thing.offset({
+                left: Math.random() * w.x,
+                top: Math.random() * w.y
+            });
+        }
+    }
+
+    function Point(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+
+    function Ball(id, velocity) {
+        this.speed = 4;
+        this.v = velocity;
+        this.dom = $(id);
+        this.width = this.dom.width();
+        this.height = this.dom.height();
+        var off = this.dom.offset();
+        this.pos = new Point(off.left, off.top);
+
+        this.collideWindow = function(curr, next) {
+            var topBound = 0;  //scrollTop!
+            var leftBound = 0;
+            var rightBound = w.x;
+            var bottomBound = w.y;
+            if (next.x < leftBound) {
+                this.v.x = -this.v.x;
+                next.x = leftBound;
+            } 
+            if (next.y < topBound) {
+                this.v.y = -this.v.y;
+                next.y = topBound;
+            }
+            if (next.x > rightBound) {
+                this.v.x = -this.v.x;
+                next.x = rightBound;
+            }
+            if (next.y > bottomBound) {
+                this.v.y = -this.v.y;
+                next.y = bottomBound;
+            }
+        }
+
+
+        this.collideBlocks = function(curr, next) {
+
+            var blocks = $('div.brick:visible'); //$$
+            var self = this;
+            blocks.each(function(idx, b) {
+                b = $(b);
+                var off = b.offset();
+                var w = b.width();
+                var h = b.height();
+                if (curr.x < off.left && next.x >= off.left && next.y > off.top && next.y < off.top + h) {
+                    // hit left side
+                    self.v.x = -self.v.x;
+                } else if (next.x <= off.left + w && curr.x > off.left + w && next.y > off.top && next.y < off.top + h) {
+                    // right side
+                    self.v.x = -self.v.x;
+                } else if (curr.y <= off.top && next.y > off.top && next.x > off.left && next.x < off.left + w) {
+                    // top side
+                    self.v.y = -self.v.y;
+                } else if (curr.y >= off.top + h && next.y < off.top + h && next.x > off.left && next.x < off.left + w) {
+                    self.v.y = -self.v.y;
+                    // bottom side
+                }
+            });
+        }
+
+        this.update = function(dt) {
+            var nextPos = new Point(this.pos.x + dt * this.v.x,
+                                    this.pos.y + dt * this.v.y);
+            //change direction
+            //if (Math.random() > 0.9) {
+            //    this.v.x = Math.random() * 400 - 200;
+            //    this.v.y = Math.random() * 400 - 200;
+            //}
+
+            this.collideWindow(this.pos, nextPos);
+            this.collideBlocks(this.pos, nextPos);
+            this.pos = nextPos;
+            this.dom.offset({
+                left: this.pos.x,
+                top: this.pos.y
+            });
+
+        };
+
+    }
+
+ 
+    function step(t1) {
+        var dt = ((t1 - t0) / 1000);
+        ball.update(dt);
+        t0 = t1;
+        window.requestAnimationFrame(step);
+    }
+
+
+    // init
+    var $window = $(window);
+    var w = new Point($('#m').width(), $('#m').height());
+    randomRects();
+    var ball = new Ball('#ball', new Point(350, 350));
+    var t0 = window.performance.now();
+    window.requestAnimationFrame(step);
+
+</script>
+</body>
+</html>
+
