@@ -18,7 +18,7 @@ function Point(x, y) {
 }
 
 function Ball(id, velocity) {
-    this.speed = 4;
+    this.speed = 800;
     this.v = velocity;
     this.dom = $(id);
     this.width = this.dom.width();
@@ -52,11 +52,19 @@ function Ball(id, velocity) {
 
 
     this.collidePaddle = function(curr, next) {
+        var PI = Math.PI;
         var $paddle = $('#paddle');
         var off = $paddle.offset();
         var w = $paddle.width();
         if (curr.y <= off.top && next.y > off.top  && next.x > off.left && next.x < off.left + w) {
-            this.v.y = - this.v.y;
+            // reflect x based on distance from the midpoint
+            var dist = (next.x - off.left) / w;  // dist along paddle, 0->1
+            var theta =  -dist *  PI - PI;  // dist -PI/2 -> PI/2
+            this.v.y = -Math.sin(theta);
+            this.v.x = Math.cos(theta);
+            console.log(this.v);
+            //this.v.y = - this.v.y;
+            // rotate though theta
         }
     }
 
@@ -104,8 +112,8 @@ function Ball(id, velocity) {
     }
 
     this.update = function(dt) {
-        var nextPos = new Point(this.pos.x + dt * this.v.x,
-                                this.pos.y + dt * this.v.y);
+        var nextPos = new Point(this.pos.x + dt * this.v.x * this.speed,
+                                this.pos.y + dt * this.v.y * this.speed);
         this.collideWindow(this.pos, nextPos);
         this.collideBlocks(this.pos, nextPos);
         this.collidePaddle(this.pos, nextPos);
@@ -281,7 +289,7 @@ function main() {
         };
         $window = $(window);
         w = new Point($('#m').width(), $('#m').height());
-        ball = new Ball('#ball', new Point(350, 350));
+        ball = new Ball('#ball', new Point(0, -1));
         ball.dom.offset(startPos);
 
 		$(document).css({
