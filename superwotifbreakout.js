@@ -4,6 +4,9 @@ console.log("AAAAAAAAAh");
  */
 
 var ball;
+var t0;
+var w;
+var $window;
 var running = true;
 var level = 0;
 var score = 0;
@@ -14,7 +17,107 @@ function Point(x, y) {
     this.y = y;
 }
 
+function Ball(id, velocity) {
+    this.speed = 4;
+    this.v = velocity;
+    this.dom = $(id);
+    this.width = this.dom.width();
+    this.height = this.dom.height();
+    var off = this.dom.offset();
+    this.pos = new Point(off.left, off.top);
 
+    this.collideWindow = function(curr, next) {
+        var bottomBound = $(window).height() + $(document).scrollTop();
+        var topBound = $('table.matrix-content').offset().top;
+        var someTr = $('tr.grid-header').last();
+        var leftBound = someTr.offset().left;
+        var rightBound = leftBound + someTr.width();
+        if (next.x < leftBound) {
+            this.v.x = -this.v.x;
+            next.x = leftBound;
+        } 
+        if (next.y < topBound) {
+            this.v.y = -this.v.y;
+            next.y = topBound;
+        }
+        if (next.x > rightBound) {
+            this.v.x = -this.v.x;
+            next.x = rightBound;
+        }
+        if (next.y > bottomBound) {
+            this.v.y = -this.v.y;
+            next.y = bottomBound;
+        }
+    }
+
+
+    this.collidePaddle = function(curr, next) {
+        var $paddle = $('#paddle');
+        var off = $paddle.offset();
+        var w = $paddle.width();
+        if (curr.y <= off.top && next.y > off.top  && next.x > off.left && next.x < off.left + w) {
+            this.v.y = - this.v.y;
+        }
+    }
+
+
+    // check intersection of line with points (curr, next) with 
+    // all the active blocks. 
+    this.collideBlocks = function(curr, next) {
+        var blocks = $('tr.deals:visible').find('td.weekday, td.weekend'); //$$
+        var self = this;
+        blocks.each(function(idx, b) {
+            var $b = $(b);
+            var off = $b.offset();
+            var w = $b.width();
+            var h = $b.height();
+            var hit = false;
+            if (curr.x < off.left && next.x >= off.left && next.y > off.top && next.y < off.top + h) {
+                // hit left side
+                self.v.x = -self.v.x;
+                hit = true;
+            } else if (next.x <= off.left + w && curr.x > off.left + w && next.y > off.top && next.y < off.top + h) {
+                // right side
+                self.v.x = -self.v.x;
+                hit = true;
+            } else if (curr.y <= off.top && next.y > off.top && next.x > off.left && next.x < off.left + w) {
+                // top side
+                self.v.y = -self.v.y;
+                hit = true;
+            } else if (curr.y >= off.top + h && next.y < off.top + h && next.x > off.left && next.x < off.left + w) {
+                // bottom side
+                self.v.y = -self.v.y;
+                hit = true;
+            }
+            if (hit) {
+                if ($b.hasClass("hotdeal")) {
+                    $b.removeClass("hotdeal");
+                } else {
+                    // add to score
+                    score += +$b.text();
+                    $(".breakout-score b").text(score);
+                    b.hit = true;
+                    $b.attr('class', 'anim sold').html('SOLD');
+                }
+            }
+        });
+    }
+
+    this.update = function(dt) {
+        var nextPos = new Point(this.pos.x + dt * this.v.x,
+                                this.pos.y + dt * this.v.y);
+        this.collideWindow(this.pos, nextPos);
+        this.collideBlocks(this.pos, nextPos);
+        this.collidePaddle(this.pos, nextPos);
+        this.pos = nextPos;
+        this.dom.offset({
+            left: this.pos.x,
+            top: this.pos.y
+        });
+    };
+}
+
+/*
 function Ball(id, velocity) {
     this.speed = 4;
     this.v = velocity;
@@ -138,6 +241,7 @@ function Ball(id, velocity) {
         });
     };
 }
+*/
 
 function main() {
     window.broken = true;
@@ -175,24 +279,21 @@ function main() {
             top: $('#paddle').offset().top - 20,
             left: m.offset().left + m.width() / 2,
         };
-        ball = new Ball('#ball', new Point(1, 1));
+        $window = $(window);
+        w = new Point($('#m').width(), $('#m').height());
+        ball = new Ball('#ball', new Point(350, 350));
         ball.dom.offset(startPos);
 
-		//$('<img />', {
-			//id: 'nyan-cat',
-			//src: 'http://nyan.alternative.ly/nyan-cat3.gif',
-		//}).appendTo("#nyan");
-		
 		$(document).css({
 			overflow: 'hide'
 		});
         $(".shortlist-summary").hide();
         $(".shortlist-summary").after("<div class='breakout-score' style='text-align: right; float: right; padding-right: 2em;'>SCORE<b>0</b></div>");
         $(".shortlist-summary").after("<div class='breakout-level' style='text-align: right; float: right;'>LEVEL<b>1</b></div>");
-		//addMouseMovement();
-		//addKeyboardMovement();
         console.log("lIOADEDED!");
-        step(0);
+        t0 = window.performance.now();
+        window.requestAnimationFrame(step);
+        //step(0);
     });
 
 
@@ -271,12 +372,18 @@ function nextLevel() {
     $("#level-head-div").slideDown().delay(2000).slideUp();
 }
 
-    function step(delay) {
-        ball.update();
-        if (running) {
-            window.setTimeout(step, delay); 
-        }
+    function step(t1) {
+        var dt = ((t1 - t0) / 1000);
+        ball.update(dt);
+        t0 = t1;
+        window.requestAnimationFrame(step);
     }
+    //function step(delay) {
+    //    ball.update();
+    //    if (running) {
+    //        window.setTimeout(step, delay); 
+    //    }
+    //}
 	
 	if(!window.broken) {
 		main();

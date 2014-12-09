@@ -57,10 +57,11 @@ div.brick {
         this.pos = new Point(off.left, off.top);
 
         this.collideWindow = function(curr, next) {
-            var topBound = 0;  //scrollTop!
-            var leftBound = 0;
-            var rightBound = w.x;
-            var bottomBound = w.y;
+            var scrollTop = $(document).scrollTop();
+            var topBound = $('table.matrix-content').offset().top;
+            var someTr = $('tr.grid-header').last();
+            var leftBound = someTr.offset().left;
+            var rightBound = leftBound + someTr.width();
             if (next.x < leftBound) {
                 this.v.x = -this.v.x;
                 next.x = leftBound;
@@ -80,8 +81,9 @@ div.brick {
         }
 
 
+        // check intersection of line with points (curr, next) with 
+        // all the active blocks. 
         this.collideBlocks = function(curr, next) {
-
             var blocks = $('div.brick:visible'); //$$
             var self = this;
             blocks.each(function(idx, b) {
@@ -108,12 +110,6 @@ div.brick {
         this.update = function(dt) {
             var nextPos = new Point(this.pos.x + dt * this.v.x,
                                     this.pos.y + dt * this.v.y);
-            //change direction
-            //if (Math.random() > 0.9) {
-            //    this.v.x = Math.random() * 400 - 200;
-            //    this.v.y = Math.random() * 400 - 200;
-            //}
-
             this.collideWindow(this.pos, nextPos);
             this.collideBlocks(this.pos, nextPos);
             this.pos = nextPos;
@@ -121,9 +117,7 @@ div.brick {
                 left: this.pos.x,
                 top: this.pos.y
             });
-
         };
-
     }
 
  
@@ -140,7 +134,6 @@ div.brick {
     var w = new Point($('#m').width(), $('#m').height());
     randomRects();
     var ball = new Ball('#ball', new Point(350, 350));
-    var t0 = window.performance.now();
     window.requestAnimationFrame(step);
 
 </script>
