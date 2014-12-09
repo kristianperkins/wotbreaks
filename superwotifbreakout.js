@@ -3,6 +3,7 @@ console.log("AAAAAAAAAh");
    javascript:var a,b,c=['https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js','http://nyan.alternative.ly/css-transform.js','http://nyan.alternative.ly/jquery-rotate.js','http://nyan.alternative.ly/nyan.js'];for(a=0;a!=c.length;a++){b=document.createElement('script');b.src=c[a];document.body.appendChild(b);}void(0);
  */
 
+var startPos;
 var ball;
 var t0;
 var w;
@@ -11,6 +12,7 @@ var running = true;
 var level = 0;
 var score = 0;
 var debugStep = false;
+var bonus = $("<div class='breakout-bonus' style='width: 70px; height: 50px; left: 0px; top:0px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);'>stuff</div>");
 
 function Point(x, y) {
     this.x = x;
@@ -101,8 +103,10 @@ function Ball(id, velocity) {
                 if ($b.hasClass("hotdeal")) {
                     $b.removeClass("hotdeal");
                 } else {
-                    var bonus = $("<div class='breakout-bonus' style='width: 70px; height: 50px; left: " + curr.x + "px; top:"+ curr.y  + "px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);'>stuff</div>");
-                    bonus.appendTo("body");
+                    if (Math.random() < 0.1) {
+                        bonus.offset({top: curr.y, left: curr.x});
+                        bonus.appendTo("body");
+                    }
                     // add to score
                     score += +$b.text();
                     $(".breakout-score b").text(score);
@@ -125,6 +129,7 @@ function Ball(id, velocity) {
             left: this.pos.x,
             top: this.pos.y
         });
+        console.log('frame');
     };
 }
 
@@ -160,14 +165,15 @@ function main() {
         $("<div id='level-head-div' style='display: none; top: 260px; width: 100%; height: 40px; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;'>Level X</h1></div>").appendTo("body");
         init = true;
         var m = $('#main');
-        var startPos = {
-            top: $('#paddle').offset().top - 20,
+        startPos = {
+            top: $('#paddle').offset().top - 50,
             left: m.offset().left + m.width() / 2,
         };
         $window = $(window);
         w = new Point($('#m').width(), $('#m').height());
-        ball = new Ball('#ball', new Point(0, -1));
+        ball = new Ball('#ball', new Point(0, 1));
         ball.dom.offset(startPos);
+        ball.pos = new Point(startPos.left, startPos.top);
 
 		$(document).css({
 			overflow: 'hide'
