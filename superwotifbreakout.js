@@ -100,6 +100,10 @@ function Ball(id, velocity) {
                     $(".breakout-score b").text(score);
                     b.hit = true;
                     $b.attr('class', 'anim sold').html('SOLD');
+                    if ($('tr.deals:visible td:not(.sold)').not('.summary').length == 0) {
+                        nextLevel();
+                    }
+
                 }
             }
         });
