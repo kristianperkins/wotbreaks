@@ -13,6 +13,7 @@ var level = 0;
 var score = 0;
 var debugStep = false;
 var bonus = $("<div class='breakout-bonus' style='width: 70px; height: 50px; left: 0px; top:0px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);'>stuff</div>");
+var rows = $('table.matrix-content tr.deals:not(tr.wothotel)');
 
 function Point(x, y) {
     this.x = x;
@@ -259,19 +260,28 @@ function main() {
 	}
 
 function nextLevel() {
-    $('table.matrix-content tr:not(.grid-header)').hide();
-    $('table.matrix-content tr.deals:not(tr.wothotel)').slice(level * 4, (level + 1) * 4).show();
-    level++;
-    $(".breakout-level  b").text(level);
-    $("#level-heading").text("Level " + level);
-    $("#level-head-div").slideDown().delay(2000).slideUp();
+    console.log(level, 'rows', rows.size());
+    if (Math.ceil(rows.size() / 4) > level) {
+        $('table.matrix-content tr:not(.grid-header)').hide();
+        rows.slice(level * 4, (level + 1) * 4).show();
+        level++;
+        $("#level-heading").text("Level " + level);
+        $(".breakout-level b").text(level);
+        $("#level-head-div").slideDown().delay(2000).slideUp();
+    } else {
+        $("#level-heading").text("You Win!");
+        $("#level-head-div").slideDown();
+        running = false;
+    }
 }
 
     function step(t1) {
         var dt = ((t1 - t0) / 1000);
         ball.update(dt);
         t0 = t1;
-        window.requestAnimationFrame(step);
+        if (running) {
+            window.requestAnimationFrame(step);
+        }
     }
     //function step(delay) {
     //    ball.update();
