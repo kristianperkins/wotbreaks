@@ -167,7 +167,7 @@ function main() {
         });
 		$("<div id='paddle' style='background:pink; width: 200px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
 		$("<div id='ball' class='ball' style='width: 20px; height:20px; top:15px; bottom:15px; position: fixed; z-index=1000000; border-radius: 50%; margin: 0; background: radial-gradient(circle at 7px 7px, #CCC, #000);'></div>").appendTo("body");
-        $("<div id='level-head-div' style='display: none; top: 260px; width: 100%; height: 40px; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;'>Level X</h1></div>").appendTo("body");
+        $("<div id='level-head-div' style='display: none; top: 260px; width: 100%; height: auto; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;padding-bottom: 5px; z-index: 9999999'>Level X</h1></div>").appendTo("body");
         init = true;
         var m = $('#main');
         startPos = {
@@ -269,7 +269,9 @@ function nextLevel() {
         $(".breakout-level b").text(level);
         $("#level-head-div").slideDown().delay(2000).slideUp();
     } else {
-        $("#level-heading").text("You Win!");
+        $('.breakout-bonus').hide();
+        $('#ball').hide();
+        $("#level-heading").text("Congratulations, You Completed " + wotifConfig.groupMapName + " Region");
         $("#level-head-div").slideDown();
         running = false;
     }
