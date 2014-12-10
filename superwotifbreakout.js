@@ -17,12 +17,20 @@ var sprites = [];
 var balls = [];
 
 
+function rchoice(lst) {
+    // le sigh
+    return lst[Math.floor(Math.random() * lst.length)];
+}
+
 function Bonus(startPoint) {
+    this.types = 'MS';  // Multi, Sticky
+    this.type = rchoice(this.types);
     this.speed = 200;
     this.v = new Point(0, 1);
-    this.dom = $("<div class='breakout-bonus' style='width: 70px; height: 50px; left: 0px; top:0px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);'>stuff</div>");
+    this.dom = $("<div class='breakout-bonus " + this.type + "' style='width: 30px; height: 30px; left: 0px; top:0px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);'>" + this.type + "</div>");
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
+    
     this.width = this.dom.width();
     this.height = this.dom.height();
     var off = this.dom.offset();
@@ -35,20 +43,22 @@ function Bonus(startPoint) {
         var w = $paddle.width();
         if (curr.y + this.height <= off.top && next.y + this.height > off.top  && next.x + this.width > off.left && next.x < off.left + w) {
             // power up hit the paddle
+            this.typeInit[this.type]();
             this.kill();
-            var b0 = balls[0];
-            var bb = balls.length;
-            for (var i = 3; i > bb; i--) {
-                var theta =  -i / 6 * PI - PI;  // dist -PI/2 -> PI/2
-                //var theta = i * Math.PI / 6;
-                var y = -Math.sin(theta);
-                var x = Math.cos(theta);
-                x = b0.v.x + .02 * i;
-                y = b0.v.y;
-                var b = new Ball(new Point(b0.pos.x + i * 40, b0.pos.y), new Point(x, y));
-                sprites.push(b);
-                balls.push(b);
-            }
+        }
+    }
+    this.stickyBall = function() {
+        paddleSticks = 5;
+    }
+    this.multiBall = function() {
+        var b0 = balls[0];
+        var bb = balls.length;
+        for (var i = 3; i > bb; i--) {
+            var x = b0.v.x + .02 * i;
+            var y = b0.v.y;
+            var b = new Ball(new Point(b0.pos.x + i * 40, b0.pos.y), new Point(x, y));
+            sprites.push(b);
+            balls.push(b);
         }
     }
 
@@ -82,7 +92,12 @@ function Bonus(startPoint) {
             top: this.pos.y
         });
     }
+    this.typeInit = {
+        'M': this.multiBall,
+        'S': this.stickyBall
+    }
 }
+var rows = $('table.matrix-content tr.deals:not(tr.wothotel)');
 
 function Point(x, y) {
     this.x = x;
@@ -210,15 +225,21 @@ function Ball(startPoint, velocity) {
                 if ($b.hasClass("hotdeal")) {
                     $b.removeClass("hotdeal");
                 } else {
-                    if (Math.random() < .1) {
+                    if (Math.random() < 0.4) {
                         // spawn power-up!
-                        sprites.push(new Bonus(curr));
+                        var bonus = new Bonus(curr);
+                        
+                        sprites.push(bonus);
                     }
                     // add to score
                     score += +$b.text();
                     $(".breakout-score b").text(score);
                     b.hit = true;
                     $b.attr('class', 'anim sold').html('SOLD');
+                    if ($('tr.deals:visible td:not(.sold)').not('.summary').length == 0) {
+                        nextLevel();
+                    }
+
                 }
             }
         });
@@ -254,7 +275,7 @@ function main() {
             $('body').height(window.innerHeight);
         });
 		$("<div id='paddle' style='background:pink; width: 200px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
-        $("<div id='level-head-div' style='display: none; top: 260px; width: 100%; height: 40px; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;'>Level X</h1></div>").appendTo("body");
+        $("<div id='level-head-div' style='display: none; top: 260px; width: 100%; height: auto; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;padding-bottom: 5px; z-index: 9999999'>Level X</h1></div>").appendTo("body");
         init = true;
         var m = $('#main');
         startPos = new Point($('#paddle').offset().top - 50, m.offset().left + m.width() / 2);
@@ -306,7 +327,7 @@ function main() {
         $paddle.offset({left: e.pageX  });
         for (var i = 0; i < balls.length; i++) {
             var b = balls[i]
-            if (paddleSticks) {
+            if (paddleSticks && b.stuck) {
                 b.dom.offset({
                     left: e.pageX + $paddle.width() / 2,
                     top: $paddle.offset().top - $paddle.height()
@@ -367,19 +388,24 @@ function main() {
                 );*/
             }
         }
-
-        $(window).click(function() {
-            nextLevel();
-        });
 	}
 
 function nextLevel() {
-    $('table.matrix-content tr:not(.grid-header)').hide();
-    $('table.matrix-content tr.deals:not(tr.wothotel)').slice(level * 4, (level + 1) * 4).show();
-    level++;
-    $(".breakout-level  b").text(level);
-    $("#level-heading").text("Level " + level);
-    $("#level-head-div").slideDown().delay(2000).slideUp();
+    console.log(level, 'rows', rows.size());
+    if (Math.ceil(rows.size() / 4) > level) {
+        $('table.matrix-content tr:not(.grid-header)').hide();
+        rows.slice(level * 4, (level + 1) * 4).show();
+        level++;
+        $("#level-heading").text("Level " + level);
+        $(".breakout-level b").text(level);
+        $("#level-head-div").slideDown().delay(2000).slideUp();
+    } else {
+        $('.breakout-bonus').hide();
+        $('#ball').hide();
+        $("#level-heading").text("Congratulations, You Completed " + wotifConfig.groupMapName + " Region");
+        $("#level-head-div").slideDown();
+        running = false;
+    }
 }
 
     function step(t1) {
@@ -388,7 +414,9 @@ function nextLevel() {
             sprites[i].update(dt);
         }
         t0 = t1;
-        window.requestAnimationFrame(step);
+        if (running) {
+            window.requestAnimationFrame(step);
+        }
     }
     //function step(delay) {
     //    ball.update();
