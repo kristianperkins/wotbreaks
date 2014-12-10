@@ -15,6 +15,7 @@ var score = 0;
 var debugStep = false;
 var sprites = [];
 var balls = [];
+var lives = 3;
 
 
 function rchoice(lst) {
@@ -158,7 +159,6 @@ function Ball(startPoint, velocity) {
 
 
     this.kill = function() {
-        console.log("BAlLLLLLLLLLLLLLLLLLLLLLL DEAD!");
         this.dom.hide();
         var idx = sprites.indexOf(this);
         if (idx > -1) {
@@ -167,6 +167,25 @@ function Ball(startPoint, velocity) {
         idx = balls.indexOf(this);
         if (idx > -1) {
             balls.splice(idx, 1);
+        }
+        if (balls.length > 0) {
+            // remove multiball
+            console.log('removing multiball');
+        } else if (balls.length == 0 && lives > 0) {
+            console.log('decreasing lives', lives, 'balls', balls.length);
+            lives--;
+            ball = new Ball(startPos, new Point(0, -1));
+            ball.stuck = true;
+            balls.push(ball);
+            sprites.push(ball);
+        } else {
+            console.log('you dead', lives, 'balls', balls.length);
+            console.log("BAlLLLLLLLLLLLLLLLLLLLLLL DEAD!");
+            $('.breakout-bonus').hide();
+            $('#ball').hide();
+            $("#level-heading").text("Game Over.  Final Score: " + score);
+            $("#level-head-div").slideDown();
+            running = false;
         }
     }
 
