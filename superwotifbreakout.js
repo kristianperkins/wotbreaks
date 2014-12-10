@@ -278,10 +278,11 @@ function main() {
         $("<div id='level-head-div' style='display: none; top: 260px; width: 100%; height: auto; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;padding-bottom: 5px; z-index: 9999999'>Level X</h1></div>").appendTo("body");
         init = true;
         var m = $('#main');
-        startPos = new Point($('#paddle').offset().top - 50, m.offset().left + m.width() / 2);
+        var $paddle = $('#paddle');
+        startPos = new Point($paddle.width() / 2.2, $paddle.offset().top - $paddle.height() - 20);
         $window = $(window);
         w = new Point($('#m').width(), $('#m').height());
-        ball = new Ball(startPos, new Point(0, -1));
+        ball = new Ball(startPos, new Point(0, 1));
         ball.stuck = true;
         balls.push(ball);
         sprites.push(ball);
@@ -324,18 +325,19 @@ function main() {
     };
     $(window).mousemove(function(e) {
         var $paddle = $('#paddle');
-        $paddle.offset({left: e.pageX  });
         for (var i = 0; i < balls.length; i++) {
             var b = balls[i]
-            if (paddleSticks && b.stuck) {
+            if (b.stuck) {
+                var pleft = b.dom.offset().left - $paddle.offset().left;
                 b.dom.offset({
-                    left: e.pageX + $paddle.width() / 2,
+                    left: e.pageX + pleft,
                     top: $paddle.offset().top - $paddle.height()
                 });
-                b.pos.x = e.pageX + $paddle.width() / 2;
+                b.pos.x = e.pageX + pleft;
                 b.pos.y = $paddle.offset().top - $paddle.height();
             }
         }
+        $paddle.offset({left: e.pageX  });
     });
 
     $(window).mouseup(function(e) {
