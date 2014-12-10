@@ -4,6 +4,7 @@ console.log("AAAAAAAAAh");
  */
 
 var startPos;
+var paddleSticks = 1;  // how many times paddle will stick
 var ball;
 var t0;
 var w;
@@ -12,21 +13,109 @@ var running = true;
 var level = 0;
 var score = 0;
 var debugStep = false;
-var bonus = $("<div class='breakout-bonus' style='width: 70px; height: 50px; left: 0px; top:0px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);'>stuff</div>");
+var sprites = [];
+var balls = [];
+
+
+function Bonus(startPoint) {
+    this.speed = 200;
+    this.v = new Point(0, 1);
+    this.dom = $("<div class='breakout-bonus' style='width: 70px; height: 50px; left: 0px; top:0px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);'>stuff</div>");
+    this.dom.offset({top: startPoint.y, left: startPoint.x});
+    this.dom.appendTo("body");
+    this.width = this.dom.width();
+    this.height = this.dom.height();
+    var off = this.dom.offset();
+    this.pos = new Point(startPoint.x, startPoint.y);
+
+    this.collidePaddle = function(curr, next) {
+        var PI = Math.PI;
+        var $paddle = $('#paddle');
+        var off = $paddle.offset();
+        var w = $paddle.width();
+        if (curr.y + this.height <= off.top && next.y + this.height > off.top  && next.x + this.width > off.left && next.x < off.left + w) {
+            // power up hit the paddle
+            this.kill();
+            var b0 = balls[0];
+            var bb = balls.length;
+            for (var i = 3; i > bb; i--) {
+                var theta =  -i / 6 * PI - PI;  // dist -PI/2 -> PI/2
+                //var theta = i * Math.PI / 6;
+                var y = -Math.sin(theta);
+                var x = Math.cos(theta);
+                x = b0.v.x + .02 * i;
+                y = b0.v.y;
+                var b = new Ball(new Point(b0.pos.x + i * 40, b0.pos.y), new Point(x, y));
+                sprites.push(b);
+                balls.push(b);
+            }
+        }
+    }
+
+    this.kill = function() {
+        var idx = sprites.indexOf(this);
+        if (idx > -1) {
+            sprites.splice(idx, 1);
+            this.dom.hide();
+        }
+    }
+
+    this.collideWindow = function(curr, next) {
+        var bottomBound = $(window).height() + $(document).scrollTop();
+        var topBound = $('table.matrix-content').offset().top;
+        var someTr = $('tr.grid-header').last();
+        var leftBound = someTr.offset().left;
+        var rightBound = leftBound + someTr.width();
+        if (next.y + this.height > bottomBound) {
+            this.kill();
+        }
+    }
+
+    this.update = function(dt) {
+        var nextPos = new Point(this.pos.x + dt * this.v.x * this.speed,
+                                this.pos.y + dt * this.v.y * this.speed);
+        this.collidePaddle(this.pos, nextPos);
+        this.collideWindow(this.pos, nextPos);
+        this.pos = nextPos;
+        this.dom.offset({
+            left: this.pos.x,
+            top: this.pos.y
+        });
+    }
+}
 
 function Point(x, y) {
     this.x = x;
     this.y = y;
 }
 
-function Ball(id, velocity) {
+function Ball(startPoint, velocity) {
+    this.stuck = false;
     this.speed = 800;
     this.v = velocity;
-    this.dom = $(id);
+    this.dom = $("<div id='ball' class='ball' style='width: 20px; height:20px; top:15px; bottom:15px; position: fixed; z-index=1000000; border-radius: 50%; margin: 0; background: radial-gradient(circle at 7px 7px, #CCC, #000);'></div>");
+    this.dom.offset({top: startPoint.y, left: startPoint.x});
+    this.dom.appendTo("body");
     this.width = this.dom.width();
     this.height = this.dom.height();
-    var off = this.dom.offset();
-    this.pos = new Point(off.left, off.top);
+    this.pos = new Point(startPoint.x, startPoint.y);
+
+    this.update = function(dt) {
+        if (this.stuck) {
+            return;
+        }
+        var nextPos = new Point(this.pos.x + dt * this.v.x * this.speed,
+                                this.pos.y + dt * this.v.y * this.speed);
+        this.collideWindow(this.pos, nextPos);
+        this.collideBlocks(this.pos, nextPos);
+        this.collidePaddle(this.pos, nextPos);
+        this.pos = nextPos;
+        this.dom.offset({
+            left: this.pos.x,
+            top: this.pos.y
+        });
+    };
+
 
     this.collideWindow = function(curr, next) {
         var bottomBound = $(window).height() + $(document).scrollTop();
@@ -47,8 +136,22 @@ function Ball(id, velocity) {
             next.x = rightBound;
         }
         if (next.y > bottomBound) {
-            this.v.y = -this.v.y;
-            next.y = bottomBound;
+            console.log('about to kill', this.v, this.pos);
+            this.kill();
+        }
+    }
+
+
+    this.kill = function() {
+        console.log("BAlLLLLLLLLLLLLLLLLLLLLLL DEAD!");
+        this.dom.hide();
+        var idx = sprites.indexOf(this);
+        if (idx > -1) {
+            sprites.splice(idx, 1);
+        }
+        idx = balls.indexOf(this);
+        if (idx > -1) {
+            balls.splice(idx, 1);
         }
     }
 
@@ -59,7 +162,11 @@ function Ball(id, velocity) {
         var off = $paddle.offset();
         var w = $paddle.width();
         if (curr.y <= off.top && next.y > off.top  && next.x > off.left && next.x < off.left + w) {
+            console.log("YEAH HIT THAT PADDLE");
             // reflect x based on distance from the midpoint
+            if (paddleSticks) {
+                this.stuck = true;
+            }
             var dist = (next.x - off.left) / w;  // dist along paddle, 0->1
             var theta =  -dist *  PI - PI;  // dist -PI/2 -> PI/2
             this.v.y = -Math.sin(theta);
@@ -103,9 +210,9 @@ function Ball(id, velocity) {
                 if ($b.hasClass("hotdeal")) {
                     $b.removeClass("hotdeal");
                 } else {
-                    if (Math.random() < 0.1) {
-                        bonus.offset({top: curr.y, left: curr.x});
-                        bonus.appendTo("body");
+                    if (Math.random() < .1) {
+                        // spawn power-up!
+                        sprites.push(new Bonus(curr));
                     }
                     // add to score
                     score += +$b.text();
@@ -117,20 +224,6 @@ function Ball(id, velocity) {
         });
     }
 
-    this.update = function(dt) {
-        var nextPos = new Point(this.pos.x + dt * this.v.x * this.speed,
-                                this.pos.y + dt * this.v.y * this.speed);
-        this.collideWindow(this.pos, nextPos);
-        this.collideBlocks(this.pos, nextPos);
-        this.collidePaddle(this.pos, nextPos);
-        $('.breakout-bonus').css('top', '+=1');
-        this.pos = nextPos;
-        this.dom.offset({
-            left: this.pos.x,
-            top: this.pos.y
-        });
-        console.log('frame');
-    };
 }
 
 function main() {
@@ -161,19 +254,16 @@ function main() {
             $('body').height(window.innerHeight);
         });
 		$("<div id='paddle' style='background:pink; width: 200px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
-		$("<div id='ball' class='ball' style='width: 20px; height:20px; top:15px; bottom:15px; position: fixed; z-index=1000000; border-radius: 50%; margin: 0; background: radial-gradient(circle at 7px 7px, #CCC, #000);'></div>").appendTo("body");
         $("<div id='level-head-div' style='display: none; top: 260px; width: 100%; height: 40px; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;'>Level X</h1></div>").appendTo("body");
         init = true;
         var m = $('#main');
-        startPos = {
-            top: $('#paddle').offset().top - 50,
-            left: m.offset().left + m.width() / 2,
-        };
+        startPos = new Point($('#paddle').offset().top - 50, m.offset().left + m.width() / 2);
         $window = $(window);
         w = new Point($('#m').width(), $('#m').height());
-        ball = new Ball('#ball', new Point(0, 1));
-        ball.dom.offset(startPos);
-        ball.pos = new Point(startPos.left, startPos.top);
+        ball = new Ball(startPos, new Point(0, -1));
+        ball.stuck = true;
+        balls.push(ball);
+        sprites.push(ball);
 
 		$(document).css({
 			overflow: 'hide'
@@ -211,7 +301,36 @@ function main() {
         x: 15,
         y: 15
     };
-    $(window).mousemove(function(e) { $('#paddle').offset({left: e.pageX  });  } );
+    $(window).mousemove(function(e) {
+        var $paddle = $('#paddle');
+        $paddle.offset({left: e.pageX  });
+        for (var i = 0; i < balls.length; i++) {
+            var b = balls[i]
+            if (paddleSticks) {
+                b.dom.offset({
+                    left: e.pageX + $paddle.width() / 2,
+                    top: $paddle.offset().top - $paddle.height()
+                });
+                b.pos.x = e.pageX + $paddle.width() / 2;
+                b.pos.y = $paddle.offset().top - $paddle.height();
+            }
+        }
+    });
+
+    $(window).mouseup(function(e) {
+        if (paddleSticks) {
+            for (var i = 0; i < balls.length; i++) {
+                var b = balls[i];
+                if (b.stuck) {
+                    b.stuck = false;
+                }
+                if (paddleSticks > 0) {
+                    paddleSticks--;
+                }
+            }
+        }
+    });
+
     $(document).keydown(function(e) {
         keys[e.which] = true;
         movement();
@@ -265,7 +384,9 @@ function nextLevel() {
 
     function step(t1) {
         var dt = ((t1 - t0) / 1000);
-        ball.update(dt);
+        for (var i = 0; i < sprites.length; i++) {
+            sprites[i].update(dt);
+        }
         t0 = t1;
         window.requestAnimationFrame(step);
     }
