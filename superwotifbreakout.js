@@ -5,6 +5,7 @@ console.log("AAAAAAAAAh");
 
 var startPos;
 var paddleSticks = 1;  // how many times paddle will stick
+var paddleWidth = 200;
 var ball;
 var t0;
 var w;
@@ -23,30 +24,40 @@ function rchoice(lst) {
 }
 
 function Bonus(startPoint) {
-    this.types = 'MS';  // Multi, Sticky
+    this.types = 'MST';  // Multi, Sticky, Thin
     this.type = rchoice(this.types);
     this.speed = 200;
     this.v = new Point(0, 1);
     this.dom = $("<div class='breakout-bonus " + this.type + "' style='width: 30px; height: 30px; left: 0px; top:0px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);'>" + this.type + "</div>");
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
-    
     this.width = this.dom.width();
     this.height = this.dom.height();
     var off = this.dom.offset();
     this.pos = new Point(startPoint.x, startPoint.y);
+    this.killit = null;
+
 
     this.collidePaddle = function(curr, next) {
-        var PI = Math.PI;
         var $paddle = $('#paddle');
+        var PI = Math.PI;
         var off = $paddle.offset();
         var w = $paddle.width();
         if (curr.y + this.height <= off.top && next.y + this.height > off.top  && next.x + this.width > off.left && next.x < off.left + w) {
             // power up hit the paddle
-            this.typeInit[this.type]();
+            this.startBonus();
             this.kill();
         }
     }
+    this.thinPaddle = function() {
+        var minWidth = 100;
+        var $paddle = $('#paddle');
+        window.clearTimeout(this.killit);
+        console.log('setting to', minWidth);
+        $paddle.width(minWidth);
+        console.log('set width', $paddle.width());
+        this.killit = window.setTimeout(function() { $paddle.width(paddleWidth); }, 5000);
+    };
     this.stickyBall = function() {
         paddleSticks = 5;
     }
@@ -79,7 +90,7 @@ function Bonus(startPoint) {
         if (next.y + this.height > bottomBound) {
             this.kill();
         }
-    }
+    };
 
     this.update = function(dt) {
         var nextPos = new Point(this.pos.x + dt * this.v.x * this.speed,
@@ -91,11 +102,28 @@ function Bonus(startPoint) {
             left: this.pos.x,
             top: this.pos.y
         });
-    }
+    };
+
     this.typeInit = {
         'M': this.multiBall,
-        'S': this.stickyBall
-    }
+        'S': this.stickyBall,
+        'T': this.thinPaddle
+    };
+
+    this.stopBonus = function() {
+        if (this.type == 'M') {
+            balls = [balls[0]];
+        } else if (this.type == 'S') {
+            paddleSticks = 0;
+        } else if ('T') {
+            $('#paddle').width(paddleWidth);
+        }
+        this.typeInit[this.type]();
+    };
+
+    this.startBonus = function() {
+        this.typeInit[this.type]();
+    };
 }
 var rows = $('table.matrix-content tr.deals:not(tr.wothotel)');
 
@@ -297,7 +325,7 @@ function main() {
         $(window).resize(function() {
             $('body').height(window.innerHeight);
         });
-		$("<div id='paddle' style='background:pink; width: 200px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
+		$("<div id='paddle' style='background:pink; width: " + paddleWidth  + "px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
         $("<div id='level-head-div' style='display: none; top: 260px; width: 100%; height: auto; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;padding-bottom: 5px; z-index: 9999999'>Level X</h1></div>").appendTo("body");
         $('<div id="overlay" style="background: none; width:100%; z-index: 9999999999999999; height:100%; position:fixed; top: 0%; left:0%; visibility: block;">:</div>').appendTo('body');
         init = true;
