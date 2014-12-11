@@ -15,7 +15,7 @@ var score = 0;
 var debugStep = false;
 var sprites = [];
 var balls = [];
-var lives = 0;
+var lives = 3;
 
 function rchoice(lst) {
     // le sigh
@@ -173,6 +173,7 @@ function Ball(startPoint, velocity) {
         } else if (balls.length == 0 && lives > 0) {
             console.log('decreasing lives', lives, 'balls', balls.length);
             lives--;
+            $(".lives-div").replaceWith(livesDisplay(lives));
             ball = new Ball(startPos, new Point(0, -1));
             ball.stuck = true;
             balls.push(ball);
@@ -313,13 +314,12 @@ function main() {
         $(".shortlist-summary").hide();
         $(".shortlist-summary").after("<div class='breakout-score' style='text-align: right; float: right; padding-right: 2em;'>SCORE<b>0</b></div>");
         $(".shortlist-summary").after("<div class='breakout-level' style='text-align: right; float: right;'>LEVEL<b>1</b></div>");
+        $(".shortlist-summary").after(livesDisplay(lives));
         console.log("lIOADEDED!");
         t0 = window.performance.now();
         window.requestAnimationFrame(step);
         //step(0);
     });
-
-
 
     $("<link/>", {
        rel: "stylesheet",
@@ -430,6 +430,20 @@ function nextLevel() {
         running = false;
     }
 }
+
+function livesDisplay(lives) {
+    console.log('writing lives div');
+    var div = "<div id='lives-div' class='info lives-div'><ul class='starRating' data-rating='" + lives + "'>";
+    for (var i = 0; i < 5; i++) {
+        if (i < lives) {
+            div += "<li><i class='icon-bullet'></i></li>";
+        } else {
+            div += "<li><i class='icon-bullet-half'></i></li>";
+        }
+    }
+    div += "</ul></div>";
+    return div;
+};
 
     function step(t1) {
         var dt = ((t1 - t0) / 1000);
