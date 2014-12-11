@@ -174,7 +174,10 @@ function Ball(startPoint, velocity) {
             console.log('decreasing lives', lives, 'balls', balls.length);
             lives--;
             $(".lives-div").replaceWith(livesDisplay(lives));
-            ball = new Ball(startPos, new Point(0, -1));
+            var $paddle = $('#paddle');
+            paddleSticks = 1;
+            startPos = new Point($paddle.offset().left + $paddle.width() / 2.2, $paddle.offset().top - $paddle.height() - 20);
+            ball = new Ball(startPos, new Point(0, 1));
             ball.stuck = true;
             balls.push(ball);
             sprites.push(ball);
