@@ -27,7 +27,7 @@ function Bonus(startPoint) {
     this.type = rchoice(this.types);
     this.speed = 200;
     this.v = new Point(0, 1);
-    this.dom = $("<div class='breakout-bonus " + this.type + "' style='width: 30px; height: 30px; left: 0px; top:0px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);'>" + this.type + "</div>");
+    this.dom = $("<div class='breakout-bonus " + this.type + "'>" + this.type + "</div>");
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
     
@@ -141,7 +141,7 @@ function Ball(startPoint, velocity) {
         if (next.x < leftBound) {
             this.v.x = -this.v.x;
             next.x = leftBound;
-        } 
+        }
         if (next.y < topBound) {
             this.v.y = -this.v.y;
             next.y = topBound;
@@ -216,8 +216,8 @@ function Ball(startPoint, velocity) {
     }
 
 
-    // check intersection of line with points (curr, next) with 
-    // all the active blocks. 
+    // check intersection of line with points (curr, next) with
+    // all the active blocks.
     this.collideBlocks = function(curr, next) {
         var blocks = $('tr.deals:visible').find('td.weekday, td.weekend'); //$$
         var self = this;
@@ -297,9 +297,9 @@ function main() {
         $(window).resize(function() {
             $('body').height(window.innerHeight);
         });
-		$("<div id='paddle' style='background:pink; width: 200px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
-        $("<div id='level-head-div' style='display: none; top: 260px; width: 100%; height: auto; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;padding-bottom: 5px; z-index: 9999999'>Level X</h1></div>").appendTo("body");
-        $('<div id="overlay" style="background: none; width:100%; z-index: 9999999999999999; height:100%; position:fixed; top: 0%; left:0%; visibility: block;">:</div>').appendTo('body');
+		$("<div id='paddle'></div>").appendTo("body");
+        $("<div id='level-head-div'>Level X</h1></div>").appendTo("body");
+        $('<div id="overlay">:</div>').appendTo('body');
         init = true;
         var m = $('#main');
         var $paddle = $('#paddle');
@@ -315,21 +315,31 @@ function main() {
 			overflow: 'hide'
 		});
         $(".shortlist-summary").hide();
-        $(".shortlist-summary").after("<div class='breakout-score' style='text-align: right; float: right; padding-right: 2em;'>SCORE<b>0</b></div>");
-        $(".shortlist-summary").after("<div class='breakout-level' style='text-align: right; float: right;'>LEVEL<b>1</b></div>");
-        $(".shortlist-summary").after(livesDisplay(lives));
-        console.log("lIOADEDED!");
-        t0 = window.performance.now();
-        window.requestAnimationFrame(step);
+        $(".shortlist-summary").after("<div class='breakout-score'>SCORE<b>0</b></div>");
+        $(".shortlist-summary").after("<div class='breakout-level'>LEVEL<b>1</b></div>");
+
+
+$(".shortlist-summary").after(livesDisplay(lives));
+
+        $(".w-header__inner.container").html('<a href="http://www.wotif.com/" class="w-logo w-logo--centered">Wotif.com</a>');
+
+
+
+        console.log("lOADEDED MOFO!");
+        //t0 = window.performance.now();
+        //window.requestAnimationFrame(step);
         //step(0);
     });
 
+    // Add Styles
     $("<link/>", {
        rel: "stylesheet",
        type: "text/css",
         id: "yeah",
        href: "http://localhost:8000/animate-custom.css"
     }).appendTo("head");
+
+
 
     var HORIZ_POS = 15;
     var TIME_FOR_MOVEMENT = 20;
@@ -341,7 +351,7 @@ function main() {
                         UP: 38,
                         DOWN: 40
                     };
- 
+
     console.log("doin it");
     previousPoint = {
         x: 15,
@@ -461,10 +471,10 @@ function livesDisplay(lives) {
     //function step(delay) {
     //    ball.update();
     //    if (running) {
-    //        window.setTimeout(step, delay); 
+    //        window.setTimeout(step, delay);
     //    }
     //}
-	
+
 	if(!window.broken) {
 		main();
 	}
