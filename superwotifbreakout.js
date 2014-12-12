@@ -17,6 +17,7 @@ var debugStep = false;
 var sprites = [];
 var balls = [];
 var lives = 3;
+var newMatrix = !wotifData.days
 
 function rchoice(lst) {
     // le sigh
@@ -125,7 +126,13 @@ function Bonus(startPoint) {
         this.typeInit[this.type]();
     };
 }
-var rows = $('table.matrix-content tr.deals:not(tr.wothotel)');
+
+var rows;
+if (newMatrix) {
+    rows = $('table.matrix tr.matrix__row');
+} else {
+    rows = $('table.matrix-content tr.deals:not(tr.wothotel)');
+}
 
 function Point(x, y) {
     this.x = x;
@@ -317,6 +324,10 @@ function main() {
         $('.results-header').slideUp('slow');
         $('#hotel-deals').slideUp('slow');
         $('.results-count').slideUp('slow');
+
+        // new matrix specific
+        $('#all-filters').slideUp('slow');
+
         console.log(e);
         if (init) {
             return; //fml
@@ -447,7 +458,14 @@ function main() {
 function nextLevel() {
     console.log(level, 'rows', rows.size());
     if (Math.ceil(rows.size() / 4) > level) {
-        $('table.matrix-content tr:not(.grid-header)').hide();
+        if (newMatrix) {
+            $('.matrix-card').hide();
+            rows.hide();
+            $('.matrix-card').slice(level * 4, (level + 1) * 4).show();
+            $('.matrix__spacer').hide();
+        } else {
+            $('table.matrix-content tr:not(.grid-header)').hide();
+        }
         rows.slice(level * 4, (level + 1) * 4).show();
         level++;
         $("#level-heading").text("Level " + level);
