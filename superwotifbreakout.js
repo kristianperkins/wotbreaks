@@ -19,6 +19,24 @@ var balls = [];
 var lives = 3;
 var newMatrix = !wotifData.days
 
+function getTopBound() {
+    if (newMatrix) {
+        topBound = $('.container--matrix').last().offset().top;
+    } else {
+        topBound = $('table.matrix-content').offset().top;
+    }
+    return topBound;
+}
+
+function getSomeTr() {
+    if (newMatrix) {
+        someTr = $('.matrix__row').first();
+    } else {
+        someTr = $('tr.grid-header').last();
+    }
+    return someTr;
+}
+
 function rchoice(lst) {
     // le sigh
     return lst[Math.floor(Math.random() * lst.length)];
@@ -84,8 +102,8 @@ function Bonus(startPoint) {
 
     this.collideWindow = function(curr, next) {
         var bottomBound = $(window).height() + $(document).scrollTop();
-        var topBound = $('table.matrix-content').offset().top;
-        var someTr = $('tr.grid-header').last();
+        var topBound = getTopBound();
+        var someTr = getSomeTr();
         var leftBound = someTr.offset().left;
         var rightBound = leftBound + someTr.width();
         if (next.y + this.height > bottomBound) {
@@ -169,8 +187,8 @@ function Ball(startPoint, velocity) {
 
     this.collideWindow = function(curr, next) {
         var bottomBound = $(window).height() + $(document).scrollTop();
-        var topBound = $('table.matrix-content').offset().top;
-        var someTr = $('tr.grid-header').last();
+        var topBound = getTopBound();
+        var someTr = getSomeTr();
         var leftBound = someTr.offset().left;
         var rightBound = leftBound + someTr.width();
         if (next.x < leftBound) {
@@ -461,7 +479,7 @@ function nextLevel() {
         if (newMatrix) {
             $('.matrix-card').hide();
             rows.hide();
-            $('.matrix-card').slice(level * 4, (level + 1) * 4).show();
+            //$('.matrix-card').slice(level * 4, (level + 1) * 4).show();
             $('.matrix__spacer').hide();
         } else {
             $('table.matrix-content tr:not(.grid-header)').hide();
