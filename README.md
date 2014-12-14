@@ -10,7 +10,7 @@ python -mSimpleHTTPServer
 
 Drag the following link onto your bookmarks toolbar. 
 
-<a href="javascript:var i,s,ss=['http://localhost:8000/jq.js'];for(i=0;i!=ss.length;i++){s=document.createElement('script');s.src=ss[i];document.body.appendChild(s);}; void(0)">Wotif Wrecking Ball</a>
+javascript:var i,s,ss=['http://localhost:8000/jq.js'];for(i=0;i!=ss.length;i++){s=document.createElement('script');s.src=ss[i];document.body.appendChild(s);}; void(0)
 
 
 Open some region page, e.g:
