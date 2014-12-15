@@ -325,6 +325,35 @@ function Ball(startPoint, velocity) {
 
 }
 
+function startPlaylist() {
+	// globals
+	var playa = document.createElement('audio');
+	var playlist = ['wreckingball.mp3', 'breakfree.mp3', 'pinkfloyd.mp3'];
+	var current = 0;
+	// var _stop = document.getElementById("stop"); TODO: mute button
+
+	function playNext() {
+		playa.src = "http://localhost:8000/"+playlist[current];
+		playa.play();
+
+		current += 1;
+		if (current >= playlist.length) {
+			current = 0;
+		}
+	}
+
+	// TODO: mute button
+	// _stop.addEventListener("click", function () {
+	// 	playa.pause();
+	// });
+
+	// get this show on the road...
+	playNext();
+
+	// rinse, repeat.
+	playa.addEventListener("ended", playNext);
+}
+
 function main() {
     window.broken = true;
     //
@@ -370,8 +399,7 @@ function main() {
         balls.push(ball);
         sprites.push(ball);
 
-		var audio = new Audio('http://localhost:8000/wreckingball.mp3');
-		audio.play();
+		startPlaylist();
 
 		$(document).css({
 			overflow: 'hide'
