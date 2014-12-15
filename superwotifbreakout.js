@@ -239,8 +239,10 @@ function Ball(startPoint, velocity) {
             console.log("BAlLLLLLLLLLLLLLLLLLLLLLL DEAD!");
             $('.breakout-bonus').hide();
             $('#ball').hide();
-            $("#level-heading").text("Game Over.  Final Score: " + score);
-            $("#level-head-div").append("<div id='twitter-break' style='padding-left: 45%'><a href='https://twitter.com/intent/tweet?button_hashtag=WotBreaks&text=Got to Level " + level + " for Region " + wotifConfig.groupMapName + " on ' class='twitter-hashtag-button' data-related='WotifTest' data-url='www.wotif.com/search/results?region=20016'>Tweet #WotBreaks</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></div>");
+            $("#level-heading").text("");
+            //$("#level-heading").append("Game Over.  Final Score: " + score);
+            $("#level-heading").append("<a class='fa fa-twitter-square' href='https://twitter.com/intent/tweet'></a> Game Over - " + score);
+            //$("#level-head-div").append("<div id='twitter-break' style='display: none;'><a href='https://twitter.com/intent/tweet?button_hashtag=WotBreaks&text=Got to Level " + level + " for Region " + wotifConfig.groupMapName + " on ' class='twitter-hashtag-button' data-related='WotifTest' data-url='www.wotif.com/search/results?region=20016'>Tweet #WotBreaks</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></div>");
             $("#level-head-div").slideDown();
             running = false;
         }
@@ -355,8 +357,8 @@ function main() {
             $('body').height(window.innerHeight);
         });
 		$("<div id='paddle' style='background:pink; width: " + paddleWidth  + "px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
-        $("<div id='level-head-div' style='display: none; top: 260px; width: 100%; height: auto; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;padding-bottom: 5px; z-index: 9999999'>Level X</h1></div>").appendTo("body");
-        $('<div id="overlay" style="background: none; width:100%; z-index: 9999999999999999; height:100%; position:fixed; top: 0%; left:0%; visibility: block;">:</div>').appendTo('body');
+        $("<div id='level-head-div' style='display: none; top: 0px; width: 100%; height: auto; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #c4cbd1); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;padding-bottom: 5px; z-index: 9999999'>Level X</h1></div>").appendTo("body");
+        //$('<div id="overlay" style="background: none; width:100%; z-index: 9999999999999999; height:100%; position:fixed; top: 0%; left:0%; visibility: block;">:</div>').appendTo('body');
         init = true;
         var m = $('#main');
         var $paddle = $('#paddle');
@@ -386,6 +388,12 @@ function main() {
        type: "text/css",
         id: "yeah",
        href: "http://localhost:8000/animate-custom.css"
+    }).appendTo("head");
+    $("<link/>", {
+       rel: "stylesheet",
+       type: "text/css",
+        id: "yeah",
+       href: "http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
     }).appendTo("head");
 
     var HORIZ_POS = 15;
