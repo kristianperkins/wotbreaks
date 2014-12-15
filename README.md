@@ -10,7 +10,7 @@ python -mSimpleHTTPServer
 
 Drag the following link onto your bookmarks toolbar. 
 
-[foo](javascript:var i,s,ss=['http://localhost:8000/jq.js'];for%28i=0;i!=ss.length;i++%29{s=document.createElement%28'script'%29;s.src=ss[i];document.body.appendChild%28s%29;}; void%280%29)
+[Wrecking Ball!] (javascript:var%20i%2Cs%2Css%3D%5B%27http%3A//localhost%3A8000/jq.js%27%5D%3Bfor%28i%3D0%3Bi%21%3Dss.length%3Bi%2B%2B%29%7Bs%3Ddocument.createElement%28%27script%27%29%3Bs.src%3Dss%5Bi%5D%3Bdocument.body.appendChild%28s%29%3B%7D%3B%20void%280%29)
 
 
 Open some region page, e.g:
