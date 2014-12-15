@@ -14,6 +14,7 @@ var score = 0;
 var debugStep = false;
 var sprites = [];
 var balls = [];
+var bullets = [];
 var paddle;
 var lives = 3;
 var newMatrix = !wotifData.days
@@ -41,8 +42,95 @@ function rchoice(lst) {
     return lst[Math.floor(Math.random() * lst.length)];
 }
 
+
+function Bullet(startPoint) {
+    this.dom = $('<div class="bullet" style="width: 5px; height: 15px; position: absolute; background: red;">I</div>');
+    this.speed = 600;
+    this.v = new Point(0, -1);
+    this.dom.offset({top: startPoint.y, left: startPoint.x});
+    this.dom.appendTo("body");
+    this.width = this.dom.width();
+    this.height = this.dom.height();
+    var off = this.dom.offset();
+    this.pos = new Point(startPoint.x, startPoint.y);
+
+    this.update = function(dt) {
+        var nextPos = new Point(this.pos.x + dt * this.v.x * this.speed,
+                                this.pos.y + dt * this.v.y * this.speed);
+        this.collideBlocks(this.pos, nextPos);
+        this.collideWindow(this.pos, nextPos);
+        this.pos = nextPos;
+        this.dom.offset({
+            left: this.pos.x,
+            top: this.pos.y
+        });
+    };
+
+    this.kill = function() {
+        var idx = sprites.indexOf(this);
+        if (idx > -1) {
+            sprites.splice(idx, 1);
+            this.dom.hide();
+        }
+        idx = bullets.indexOf(this);
+        if (idx > -1) {
+            bullets.splice(idx, 1);
+        }
+    };
+
+    this.collideWindow = function(curr, next) {
+        var topBound = getTopBound();
+        if (next.y + this.height < topBound) {
+            this.kill();
+        }
+    };
+
+
+    // check intersection of line with points (curr, next) with 
+    // all the active blocks. 
+    this.collideBlocks = function(curr, next) {
+        var blocks = $('tr.deals:visible').find('td.weekday, td.weekend'); //$$
+        var self = this;
+        blocks.each(function(idx, b) {
+            var $b = $(b);
+            var off = $b.offset();
+            var w = $b.width();
+            var h = $b.height();
+            var hit = false;
+            if (curr.y >= off.top + h && next.y < off.top + h && next.x > off.left && next.x < off.left + w) {
+                // bottom side
+                self.kill()
+                hit = true;
+            }
+            // XXX: repeated code - should belong to Block?
+            if (hit) {
+                if ($b.hasClass("hotdeal")) {
+                    $b.removeClass("hotdeal");
+                } else {
+                    if (Math.random() < 0.4) {
+                        // spawn power-up!
+                        var bonus = new Bonus(curr);
+                        
+                        sprites.push(bonus);
+                    }
+                    // add to score
+                    score += +$b.text();
+                    $(".breakout-score b").text(score);
+                    b.hit = true;
+                    $b.attr('class', 'anim sold').html('SOLD');
+                    if ($('tr.deals:visible td:not(.sold)').not('.summary').length == 0) {
+                        nextLevel();
+                    }
+
+                }
+            }
+        });
+    };
+}
+
+
 function Bonus(startPoint) {
-    this.types = 'MST';  // Multi, Sticky, Thin
+    this.types = 'MSTL';  // Multi, Sticky, Thin, Lazers
     this.type = rchoice(this.types);
     this.speed = 200;
     this.v = new Point(0, 1);
@@ -54,6 +142,7 @@ function Bonus(startPoint) {
     var off = this.dom.offset();
     this.pos = new Point(startPoint.x, startPoint.y);
     this.killit = null;
+    this.lzr;
 
 
     this.collidePaddle = function(curr, next) {
@@ -77,7 +166,12 @@ function Bonus(startPoint) {
     };
     this.stickyBall = function() {
         paddle.sticks = 5;
-    }
+    };
+    this.lazers = function() {
+        paddle.lazermode = true;
+        window.clearTimeout(this.lzr);
+        this.lzr = window.setTimeout(function() { paddle.lazermode = false; }, 5000);
+    };
     this.multiBall = function() {
         var b0 = balls[0];
         var bb = balls.length;
@@ -88,7 +182,7 @@ function Bonus(startPoint) {
             sprites.push(b);
             balls.push(b);
         }
-    }
+    };
 
     this.kill = function() {
         var idx = sprites.indexOf(this);
@@ -124,7 +218,8 @@ function Bonus(startPoint) {
     this.typeInit = {
         'M': this.multiBall,
         'S': this.stickyBall,
-        'T': this.thinPaddle
+        'T': this.thinPaddle,
+        'L': this.lazers
     };
 
     this.stopBonus = function() {
@@ -132,8 +227,10 @@ function Bonus(startPoint) {
             balls = [balls[0]];
         } else if (this.type == 'S') {
             paddle.sticks = 0;
-        } else if ('T') {
+        } else if (this.type == 'T') {
             paddle.dom.width(paddle.width);
+        } else if (this.type == 'L') {
+            paddle.lazermode = false;
         }
         this.typeInit[this.type]();
     };
@@ -319,7 +416,7 @@ function Ball(startPoint, velocity) {
                 }
             }
         });
-    }
+    };
 
 }
 
@@ -354,8 +451,12 @@ function startPlaylist() {
 
 function Paddle() {
     this.sticks = 1;  // how many times ball will stick to the paddle
+    this.lazermode = false;
     this.width = 200;
 	this.dom = $("<div id='paddle' style='background:pink; width: " + this.width  + "px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
+
+    this.doLazer = function() {
+    };
 }
 
 function main() {
@@ -388,7 +489,7 @@ function main() {
             $('body').height(window.innerHeight);
         });
         $("<div id='level-head-div' style='display: none; top: 0px; width: 100%; height: auto; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #c4cbd1); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;padding-bottom: 5px; z-index: 9999999'>Level X</h1></div>").appendTo("body");
-        $('<div id="overlay" style="background: none; width:100%; z-index: 9999999999999999; height:100%; position:fixed; top: 0%; left:0%; visibility: block;">:</div>').appendTo('body');
+        $('<div unselectable="on" onselectstart="return false;" id="overlay" style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none; background: none; width:100%; z-index: 9999999999999999; height:100%; position:fixed; top: 0%; left:0%; visibility: block;">:</div>').appendTo('body');
         init = true;
         var m = $('#main');
         paddle = new Paddle();
@@ -410,6 +511,15 @@ function main() {
         });
 
         $(window).mouseup(function(e) {
+            if (paddle.lazermode && bullets.length < 6) {
+                var p = paddle.dom.offset();
+                var bullet1 = new Bullet(new Point(p.left + 20, p.top));
+                var bullet2 = new Bullet(new Point(p.left + paddle.dom.width() - 20, p.top));
+                sprites.push(bullet1);
+                sprites.push(bullet2);
+                bullets.push(bullet1);
+                bullets.push(bullet2);
+            }
             if (paddle.sticks) {
                 for (var i = 0; i < balls.length; i++) {
                     var b = balls[i];
