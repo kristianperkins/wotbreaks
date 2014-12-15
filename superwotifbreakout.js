@@ -370,6 +370,9 @@ function main() {
         balls.push(ball);
         sprites.push(ball);
 
+		var audio = new Audio('http://localhost:8000/wreckingball.mp3');
+		audio.play();
+
 		$(document).css({
 			overflow: 'hide'
 		});
