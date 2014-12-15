@@ -4,8 +4,6 @@ console.log("AAAAAAAAAh");
  */
 
 var startPos;
-var paddleSticks = 1;  // how many times paddle will stick
-var paddleWidth = 200;
 var ball;
 var t0;
 var w;
@@ -16,6 +14,7 @@ var score = 0;
 var debugStep = false;
 var sprites = [];
 var balls = [];
+var paddle;
 var lives = 3;
 var newMatrix = !wotifData.days
 
@@ -58,7 +57,7 @@ function Bonus(startPoint) {
 
 
     this.collidePaddle = function(curr, next) {
-        var $paddle = $('#paddle');
+        var $paddle = paddle.dom;
         var PI = Math.PI;
         var off = $paddle.offset();
         var w = $paddle.width();
@@ -70,15 +69,14 @@ function Bonus(startPoint) {
     }
     this.thinPaddle = function() {
         var minWidth = 100;
-        var $paddle = $('#paddle');
+        var $paddle = paddle.dom;
         window.clearTimeout(this.killit);
         console.log('setting to', minWidth);
         $paddle.width(minWidth);
-        console.log('set width', $paddle.width());
-        this.killit = window.setTimeout(function() { $paddle.width(paddleWidth); }, 5000);
+        this.killit = window.setTimeout(function() { $paddle.width(paddle.width); }, 5000);
     };
     this.stickyBall = function() {
-        paddleSticks = 5;
+        paddle.sticks = 5;
     }
     this.multiBall = function() {
         var b0 = balls[0];
@@ -133,9 +131,9 @@ function Bonus(startPoint) {
         if (this.type == 'M') {
             balls = [balls[0]];
         } else if (this.type == 'S') {
-            paddleSticks = 0;
+            paddle.sticks = 0;
         } else if ('T') {
-            $('#paddle').width(paddleWidth);
+            paddle.dom.width(paddle.width);
         }
         this.typeInit[this.type]();
     };
@@ -227,8 +225,8 @@ function Ball(startPoint, velocity) {
             console.log('decreasing lives', lives, 'balls', balls.length);
             lives--;
             $(".lives-div").replaceWith(livesDisplay(lives));
-            var $paddle = $('#paddle');
-            paddleSticks = 1;
+            var $paddle = paddle.dom;
+            paddle.sticks = 1;
             startPos = new Point($paddle.offset().left + $paddle.width() / 2.2, $paddle.offset().top - $paddle.height() - 20);
             ball = new Ball(startPos, new Point(0, 1));
             ball.stuck = true;
@@ -251,13 +249,13 @@ function Ball(startPoint, velocity) {
 
     this.collidePaddle = function(curr, next) {
         var PI = Math.PI;
-        var $paddle = $('#paddle');
+        var $paddle = paddle.dom;
         var off = $paddle.offset();
         var w = $paddle.width();
         if (curr.y <= off.top && next.y > off.top  && next.x > off.left && next.x < off.left + w) {
             console.log("YEAH HIT THAT PADDLE");
             // reflect x based on distance from the midpoint
-            if (paddleSticks) {
+            if (paddle.sticks) {
                 this.stuck = true;
             }
             var dist = (next.x - off.left) / w;  // dist along paddle, 0->1
@@ -325,6 +323,12 @@ function Ball(startPoint, velocity) {
 
 }
 
+function Paddle() {
+    this.sticks = 1;  // how many times ball will stick to the paddle
+    this.width = 200;
+	this.dom = $("<div id='paddle' style='background:pink; width: " + this.width  + "px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
+}
+
 function main() {
     window.broken = true;
     //
@@ -347,8 +351,6 @@ function main() {
 
         // new matrix specific
         $('#all-filters').slideUp('slow');
-
-        console.log(e);
         if (init) {
             return; //fml
         }
@@ -356,12 +358,42 @@ function main() {
         $(window).resize(function() {
             $('body').height(window.innerHeight);
         });
-		$("<div id='paddle' style='background:pink; width: " + paddleWidth  + "px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
         $("<div id='level-head-div' style='display: none; top: 0px; width: 100%; height: auto; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #c4cbd1); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;padding-bottom: 5px; z-index: 9999999'>Level X</h1></div>").appendTo("body");
-        //$('<div id="overlay" style="background: none; width:100%; z-index: 9999999999999999; height:100%; position:fixed; top: 0%; left:0%; visibility: block;">:</div>').appendTo('body');
+        $('<div id="overlay" style="background: none; width:100%; z-index: 9999999999999999; height:100%; position:fixed; top: 0%; left:0%; visibility: block;">:</div>').appendTo('body');
         init = true;
         var m = $('#main');
-        var $paddle = $('#paddle');
+        paddle = new Paddle();
+        $(window).mousemove(function(e) {
+            var $paddle = paddle.dom;
+            for (var i = 0; i < balls.length; i++) {
+                var b = balls[i]
+                if (b.stuck) {
+                    var pleft = b.dom.offset().left - $paddle.offset().left;
+                    b.dom.offset({
+                        left: e.pageX + pleft,
+                        top: $paddle.offset().top - $paddle.height()
+                    });
+                    b.pos.x = e.pageX + pleft;
+                    b.pos.y = $paddle.offset().top - $paddle.height();
+                }
+            }
+            $paddle.offset({left: e.pageX  });
+        });
+
+        $(window).mouseup(function(e) {
+            if (paddle.sticks) {
+                for (var i = 0; i < balls.length; i++) {
+                    var b = balls[i];
+                    if (b.stuck) {
+                        b.stuck = false;
+                    }
+                    if (paddle.sticks > 0) {
+                        paddle.sticks--;
+                    }
+                }
+            }
+        });
+        var $paddle = paddle.dom;
         startPos = new Point($paddle.width() / 2.2, $paddle.offset().top - $paddle.height() - 20);
         $window = $(window);
         w = new Point($('#m').width(), $('#m').height());
@@ -415,36 +447,6 @@ function main() {
         x: 15,
         y: 15
     };
-    $(window).mousemove(function(e) {
-        var $paddle = $('#paddle');
-        for (var i = 0; i < balls.length; i++) {
-            var b = balls[i]
-            if (b.stuck) {
-                var pleft = b.dom.offset().left - $paddle.offset().left;
-                b.dom.offset({
-                    left: e.pageX + pleft,
-                    top: $paddle.offset().top - $paddle.height()
-                });
-                b.pos.x = e.pageX + pleft;
-                b.pos.y = $paddle.offset().top - $paddle.height();
-            }
-        }
-        $paddle.offset({left: e.pageX  });
-    });
-
-    $(window).mouseup(function(e) {
-        if (paddleSticks) {
-            for (var i = 0; i < balls.length; i++) {
-                var b = balls[i];
-                if (b.stuck) {
-                    b.stuck = false;
-                }
-                if (paddleSticks > 0) {
-                    paddleSticks--;
-                }
-            }
-        }
-    });
 
     $(document).keydown(function(e) {
         keys[e.which] = true;
@@ -454,11 +456,11 @@ function main() {
         delete keys[e.which];
     });
         function movement() {
-            var pos = $('#paddle').position();
-            if(keys[movementCodes.RIGHT] && (pos.left + $("#paddle").width() < $(document).width())) {
+            var pos = paddle.dom.position();
+            if(keys[movementCodes.RIGHT] && (pos.left + paddle.dom.width() < $(document).width())) {
                 console.log('move right');
                 pos.left += PX_FOR_MOVEMENT;
-                $('#paddle').offset(pos);
+                paddle.dom.offset(pos);
                 /*$('#paddle').animate(
                     {"left": "+=" + PX_FOR_MOVEMENT + "px"},
                     TIME_FOR_MOVEMENT,
@@ -470,7 +472,7 @@ function main() {
             else if(keys[movementCodes.LEFT] && pos.left > 0) {
                 console.log('move left');
                 pos.left -= PX_FOR_MOVEMENT;
-                $('#paddle').offset(pos);
+                paddle.dom.offset(pos);
                 /*$('#paddle').animate(
                     {
                         left: "-="+ PX_FOR_MOVEMENT + "px"
