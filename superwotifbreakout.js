@@ -544,6 +544,13 @@ function main() {
 			overflow: 'hide'
 		});
         $(".shortlist-summary").hide();
+        $('.w-footer').hide();
+        $('pre').hide();  //  What is this thing?
+        $('.wrapper-outer').css('height', '100%');
+        $('.wrapper-inner').css('height', '100%').css('background-color', '#e8e8e8');
+        $('.wrapper-inner').css('height', '100%').css('background-color', '#e8e8e8');
+        var hheight = $('.w-header').height();
+        $('.wrapper-outer').css('height', '100%').css('height', '-= ' + hheight + 'px');  // XXX: This won't work with resize!
         $(".shortlist-summary").after("<div class='breakout-score' style='text-align: right; float: right; padding-right: 2em;'>SCORE<b>0</b></div>");
         $(".shortlist-summary").after("<div class='breakout-level' style='text-align: right; float: right;'>LEVEL<b>1</b></div>");
         $(".shortlist-summary").after(livesDisplay(lives));
