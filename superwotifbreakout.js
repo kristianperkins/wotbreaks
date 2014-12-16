@@ -420,7 +420,7 @@ function Ball(startPoint, velocity) {
 function startPlaylist() {
 	// globals
 	var playa = document.createElement('audio');
-	var playlist = ['wreckingball.mp3', 'breakfree.mp3', 'pinkfloyd.mp3'];
+	var playlist = ['wreckingball.mp3', 'sabotage.mp3', 'breakfree.mp3'];
 	var current = 0;
 	// var _stop = document.getElementById("stop"); TODO: mute button
 
