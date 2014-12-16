@@ -356,12 +356,9 @@ function Ball(startPoint, velocity) {
                 this.stuck = true;
             }
             var dist = (next.x - off.left) / w;  // dist along paddle, 0->1
-            var theta =  -dist *  PI - PI;  // dist -PI/2 -> PI/2
+            var theta = 7/8 * PI - dist * 6/8 * PI;  // curve along paddle, 7PI/8 -> PI/8
             this.v.y = -Math.sin(theta);
             this.v.x = Math.cos(theta);
-            console.log(this.v);
-            //this.v.y = - this.v.y;
-            // rotate though theta
         }
     }
 
