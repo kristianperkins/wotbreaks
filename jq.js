@@ -94,3 +94,7 @@ var c=$(as).offset({left:xoff,top:yoff}).width(e.overlap.width()).height(e.overl
 $.ajax({
     url: "http://localhost:8000/superwotifbreakout.js",
         dataType: "script"});
+$.ajax({
+    url: "http://platform.twitter.com/widgets.js",
+        dataType: "script"});
+

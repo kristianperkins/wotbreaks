@@ -336,7 +336,9 @@ function Ball(startPoint, velocity) {
             $('#ball').hide();
             $("#level-heading").text("");
             //$("#level-heading").append("Game Over.  Final Score: " + score);
-            $("#level-heading").append("<a class='fa fa-twitter-square' href='https://twitter.com/intent/tweet'></a> Game Over - " + score);
+            $("#level-heading").append("<a class='fa fa-twitter-square' href='https://twitter.com/intent/tweet?text=Got%20to%20Level%20" + level + "%20on%20%23BreakWTF'></a> Game Over - " + score);
+            $('#overlay').hide();
+            //$("#level-head-div").append("<script type='text/javascript'>twttr.events.bind('tweet', function (event) { alert('Tweeted'); }););
             //$("#level-head-div").append("<div id='twitter-break' style='display: none;'><a href='https://twitter.com/intent/tweet?button_hashtag=WotBreaks&text=Got to Level " + level + " for Region " + wotifConfig.groupMapName + " on ' class='twitter-hashtag-button' data-related='WotifTest' data-url='www.wotif.com/search/results?region=20016'>Tweet #WotBreaks</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></div>");
             $("#level-head-div").slideDown();
             running = false;
