@@ -452,7 +452,7 @@ function Paddle() {
     this.sticks = 1;  // how many times ball will stick to the paddle
     this.lazermode = false;
     this.width = 200;
-	this.dom = $("<div id='paddle' style='background:pink; width: " + this.width  + "px; height:1em; left:15px; bottom:15px; position: fixed;z-index=1000000;'></div>").appendTo("body");
+	this.dom = $("<div id='paddle' style='width: " + this.width  + "px; height: 20px; left:15px; bottom:15px; position: fixed;z-index=1000000; background: linear-gradient(to bottom, rgb(97, 153, 199) 0%, rgb(58, 132, 195) 2%, rgb(65, 154, 214) 18%, rgb(75, 184, 240) 42%, rgb(58, 139, 194) 68%, rgb(38, 85, 139) 100%)'></div>").appendTo("body");
 
     this.doLazer = function() {
     };
