@@ -253,11 +253,12 @@ function Point(x, y) {
 }
 
 function Ball(startPoint, velocity) {
+    console.log("Creating ball at", startPoint);
     this.stuck = false;
     this.speed = 600;
     this.v = velocity;
     this.phitx = null;
-    this.dom = $("<div id='ball' class='ball' style='width: 20px; height:20px; top:15px; bottom:15px; position: fixed; z-index=1000000; border-radius: 50%; margin: 0; background: radial-gradient(circle at 7px 7px, #CCC, #000);'></div>");
+    this.dom = $("<div id='ball' class='ball' style='width: 20px; height:20px; position: fixed; z-index=1000000; border-radius: 50%; margin: 0; background: radial-gradient(circle at 7px 7px, #CCC, #000);'></div>");
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
     this.width = this.dom.width();
@@ -325,7 +326,8 @@ function Ball(startPoint, velocity) {
             $(".lives-div").replaceWith(livesDisplay(lives));
             var $paddle = paddle.dom;
             paddle.sticks = 1;
-            startPos = new Point($paddle.offset().left + $paddle.width() / 2.2, $paddle.offset().top - $paddle.height() - 20);
+            var ballheight = 20;
+            startPos = new Point($paddle.offset().left + $paddle.width() / 2.2, $paddle.offset().top - ballheight - $paddle.height());
             ball = new Ball(startPos, new Point(0, 1));
             ball.stuck = true;
             ball.phitx = startPos.x - $paddle.offset().left;
@@ -351,7 +353,7 @@ function Ball(startPoint, velocity) {
         var $paddle = paddle.dom;
         var off = $paddle.offset();
         var w = $paddle.width();
-        if (curr.y <= off.top && next.y > off.top  && next.x > off.left && next.x < off.left + w) {
+        if (curr.y + this.height <= off.top && next.y + this.height > off.top  && next.x > off.left && next.x < off.left + w) {
             // reflect x based on distance from the midpoint
             this.phitx = next.x - off.left;
             if (paddle.sticks) {
@@ -502,7 +504,7 @@ function main() {
                     //var pleft = b.dom.offset().left - $paddle.offset().left;
                     var phitx = ball.phitx || 0;
                     var bleft = e.pageX - pwidth / 2;
-                    var btop = $paddle.offset().top - $paddle.height();
+                    var btop = $paddle.offset().top - b.height;
                     b.dom.offset({
                         left: bleft + phitx,
                         top: btop
@@ -536,7 +538,9 @@ function main() {
             }
         });
         var $paddle = paddle.dom;
-        startPos = new Point($paddle.width() / 2.2, $paddle.offset().top - $paddle.height() - 20);
+        var ballheight = 20; // look this up...
+        startPos = new Point($paddle.offset().left + $paddle.width() / 2.2, $paddle.offset().top - ballheight );
+        console.log('po', $paddle.offset().top, ballheight);
         $window = $(window);
         w = new Point($('#m').width(), $('#m').height());
         ball = new Ball(startPos, new Point(0, 1));
@@ -544,6 +548,8 @@ function main() {
         ball.phitx = startPos.x;
         balls.push(ball);
         sprites.push(ball);
+
+        console.log('BOO', ball.dom.offset().top, ballheight);
 
 		startPlaylist();
 
