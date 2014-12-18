@@ -1,7 +1,3 @@
-console.log("AAAAAAAAAh");
-/*
-   javascript:var a,b,c=['https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js','http://nyan.alternative.ly/css-transform.js','http://nyan.alternative.ly/jquery-rotate.js','http://nyan.alternative.ly/nyan.js'];for(a=0;a!=c.length;a++){b=document.createElement('script');b.src=c[a];document.body.appendChild(b);}void(0);
- */
 
 var startPos;
 var ball;
@@ -129,9 +125,11 @@ function Bullet(startPoint) {
 }
 
 
-function Bonus(startPoint) {
-    this.types = 'MSTL';  // Multi, Sticky, Thin, Lazers
-    this.type = rchoice(this.types);
+function Bonus(startPoint, type) {
+    this.type = rchoice(Bonus.types);
+    if (type) {
+        this.type = type;
+    }
     this.speed = 200;
     this.v = new Point(0, 1);
     this.dom = $("<div class='breakout-bonus " + this.type + "' style='width: 30px; height: 30px; left: 0px; top:0px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);'>" + this.type + "</div>");
@@ -239,6 +237,7 @@ function Bonus(startPoint) {
         this.typeInit[this.type]();
     };
 }
+Bonus.types = 'MSTL';  // Multi, Sticky, Thin, Lazers
 
 var rows;
 if (newMatrix) {
@@ -502,7 +501,7 @@ function main() {
                 var b = balls[i]
                 if (b.stuck) {
                     //var pleft = b.dom.offset().left - $paddle.offset().left;
-                    var phitx = ball.phitx || 0;
+                    var phitx = b.phitx || 0;
                     var bleft = e.pageX - pwidth / 2;
                     var btop = $paddle.offset().top - b.height;
                     b.dom.offset({
@@ -586,33 +585,14 @@ function main() {
        href: "http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
     }).appendTo("head");
 
-    var HORIZ_POS = 15;
-    var TIME_FOR_MOVEMENT = 20;
-    var PX_FOR_MOVEMENT = 20;
-
-    var keys = {};
-    movementCodes = {   LEFT: 37,
-                        RIGHT: 39,
-                        UP: 38,
-                        DOWN: 40
-                    };
- 
-    console.log("doin it");
-    previousPoint = {
-        x: 15,
-        y: 15
-    };
-
     $(document).keydown(function(e) {
-        keys[e.which] = true;
-        movement();
-    });
-    $(document).keyup(function(e) {
-        delete keys[e.which];
-    });
-        function movement() {
+        console.log(e);
+        var char = String.fromCharCode(e.which);
+        if (Bonus.types.indexOf(char) > -1) {
+            sprites.push(new Bonus(new Point($(window).width() / 2, 100), char));
         }
-	}
+    });
+}
 
 function nextLevel() {
     console.log(level, 'rows', rows.size());
@@ -653,23 +633,17 @@ function livesDisplay(lives) {
     return div;
 };
 
-    function step(t1) {
-        var dt = ((t1 - t0) / 1000);
-        for (var i = 0; i < sprites.length; i++) {
-            sprites[i].update(dt);
-        }
-        t0 = t1;
-        if (running) {
-            window.requestAnimationFrame(step);
-        }
+function step(t1) {
+    var dt = ((t1 - t0) / 1000);
+    for (var i = 0; i < sprites.length; i++) {
+        sprites[i].update(dt);
     }
-    //function step(delay) {
-    //    ball.update();
-    //    if (running) {
-    //        window.setTimeout(step, delay); 
-    //    }
-    //}
-	
-	if(!window.broken) {
-		main();
-	}
+    t0 = t1;
+    if (running) {
+        window.requestAnimationFrame(step);
+    }
+}
+
+if(!window.broken) {
+    main();
+}
