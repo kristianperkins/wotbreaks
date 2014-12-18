@@ -338,6 +338,7 @@ function Ball(startPoint, velocity) {
             $('#ball').hide();
             $("#level-heading").text("");
             //$("#level-heading").append("Game Over.  Final Score: " + score);
+            $('#overlay').hide();
             $("#level-heading").append("<a class='fa fa-twitter-square' href='https://twitter.com/intent/tweet'></a> Game Over - " + score);
             $("#level-head-div").slideDown();
             running = false;
