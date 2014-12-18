@@ -254,8 +254,9 @@ function Point(x, y) {
 
 function Ball(startPoint, velocity) {
     this.stuck = false;
-    this.speed = 800;
+    this.speed = 600;
     this.v = velocity;
+    this.phitx = null;
     this.dom = $("<div id='ball' class='ball' style='width: 20px; height:20px; top:15px; bottom:15px; position: fixed; z-index=1000000; border-radius: 50%; margin: 0; background: radial-gradient(circle at 7px 7px, #CCC, #000);'></div>");
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
@@ -327,6 +328,7 @@ function Ball(startPoint, velocity) {
             startPos = new Point($paddle.offset().left + $paddle.width() / 2.2, $paddle.offset().top - $paddle.height() - 20);
             ball = new Ball(startPos, new Point(0, 1));
             ball.stuck = true;
+            ball.phitx = startPos.x - $paddle.offset().left;
             balls.push(ball);
             sprites.push(ball);
         } else {
@@ -337,7 +339,6 @@ function Ball(startPoint, velocity) {
             $("#level-heading").text("");
             //$("#level-heading").append("Game Over.  Final Score: " + score);
             $("#level-heading").append("<a class='fa fa-twitter-square' href='https://twitter.com/intent/tweet'></a> Game Over - " + score);
-            //$("#level-head-div").append("<div id='twitter-break' style='display: none;'><a href='https://twitter.com/intent/tweet?button_hashtag=WotBreaks&text=Got to Level " + level + " for Region " + wotifConfig.groupMapName + " on ' class='twitter-hashtag-button' data-related='WotifTest' data-url='www.wotif.com/search/results?region=20016'>Tweet #WotBreaks</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></div>");
             $("#level-head-div").slideDown();
             running = false;
         }
@@ -350,8 +351,8 @@ function Ball(startPoint, velocity) {
         var off = $paddle.offset();
         var w = $paddle.width();
         if (curr.y <= off.top && next.y > off.top  && next.x > off.left && next.x < off.left + w) {
-            console.log("YEAH HIT THAT PADDLE");
             // reflect x based on distance from the midpoint
+            this.phitx = next.x - off.left;
             if (paddle.sticks) {
                 this.stuck = true;
             }
@@ -491,20 +492,24 @@ function main() {
         var m = $('#main');
         paddle = new Paddle();
         $(window).mousemove(function(e) {
+            var pwidth = paddle.dom.width();
             var $paddle = paddle.dom;
+            $paddle.offset({left: e.pageX - pwidth / 2  });
             for (var i = 0; i < balls.length; i++) {
                 var b = balls[i]
                 if (b.stuck) {
-                    var pleft = b.dom.offset().left - $paddle.offset().left;
+                    //var pleft = b.dom.offset().left - $paddle.offset().left;
+                    var phitx = ball.phitx || 0;
+                    var bleft = e.pageX - pwidth / 2;
+                    var btop = $paddle.offset().top - $paddle.height();
                     b.dom.offset({
-                        left: e.pageX + pleft,
-                        top: $paddle.offset().top - $paddle.height()
+                        left: bleft + phitx,
+                        top: btop
                     });
-                    b.pos.x = e.pageX + pleft;
-                    b.pos.y = $paddle.offset().top - $paddle.height();
+                    b.pos.x = bleft + phitx;
+                    b.pos.y = btop;
                 }
             }
-            $paddle.offset({left: e.pageX  });
         });
 
         $(window).mouseup(function(e) {
@@ -535,6 +540,7 @@ function main() {
         w = new Point($('#m').width(), $('#m').height());
         ball = new Ball(startPos, new Point(0, 1));
         ball.stuck = true;
+        ball.phitx = startPos.x;
         balls.push(ball);
         sprites.push(ball);
 
@@ -598,33 +604,6 @@ function main() {
         delete keys[e.which];
     });
         function movement() {
-            var pos = paddle.dom.position();
-            if(keys[movementCodes.RIGHT] && (pos.left + paddle.dom.width() < $(document).width())) {
-                console.log('move right');
-                pos.left += PX_FOR_MOVEMENT;
-                paddle.dom.offset(pos);
-                /*$('#paddle').animate(
-                    {"left": "+=" + PX_FOR_MOVEMENT + "px"},
-                    TIME_FOR_MOVEMENT,
-                    function () {
-                        //alert('hi');
-                    }
-                );*/
-            }
-            else if(keys[movementCodes.LEFT] && pos.left > 0) {
-                console.log('move left');
-                pos.left -= PX_FOR_MOVEMENT;
-                paddle.dom.offset(pos);
-                /*$('#paddle').animate(
-                    {
-                        left: "-="+ PX_FOR_MOVEMENT + "px"
-                    },
-                    TIME_FOR_MOVEMENT,
-                    function () {
-                        //alert('hi');
-                    }
-                );*/
-            }
         }
 	}
 
