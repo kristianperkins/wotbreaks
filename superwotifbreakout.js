@@ -339,7 +339,7 @@ function Ball(startPoint, velocity) {
             $("#level-heading").text("");
             //$("#level-heading").append("Game Over.  Final Score: " + score);
             $('#overlay').hide();
-            $("#level-heading").append("<a class='fa fa-twitter-square'href='https://twitter.com/intent/tweet?text=Got%20to%20Level%20" + level + "%20on%20%23BreakWTF' ></a> Game Over - " + score);
+            $("#level-heading").append("<a class='fa fa-twitter-square' style='text-decoration: none' href='https://twitter.com/intent/tweet?text=Got%20to%20Level%20" + level + "%20on%20%23BreakWTF' ></a> Game Over - " + score);
             $("#level-head-div").slideDown();
             running = false;
         }
