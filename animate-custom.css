@@ -1,3 +1,52 @@
+@keyframes blink {  
+    0% { background: cyan; }
+    100% { background: #444; }
+}
+@-webkit-keyframes blink {
+    0% { background: cyan; }
+    100% { background: #444; }
+}
+
+#paddle {
+    -webkit-animation: blink 0.5s linear infinite;
+    -moz-animation: blink 0.5s linear infinite;
+    -ms-animation: blink 0.5s linear infinite;
+    -o-animation: blink 0.5s linear infinite;
+    animation: blink 0.5s linear infinite;
+    color:white;
+    overflow:hidden;
+    width: 150px;
+    height: 15px;
+    left: 15px; 
+    bottom: 15px;
+    z-index: 1000000;
+    display:block;
+    position:fixed;
+    border-radius:50px;
+    border:1px solid #aaa;
+} 
+
+.breakout-bonus.S {
+    background-color: red;
+}
+
+#paddle{
+    /*background:#1994f8;
+    width: 200px;
+    left:15px;
+    bottom:15px;
+    position: fixed;
+    z-index:1000000;*/
+}
+
+.gradient-overlay{
+    width: 92%;
+    height: 30px;
+    background: linear-gradient(#ddd,#999);
+    position: absolute;
+    left: 4%;
+}
+
 @charset "UTF-8";
 /*
 Animate.css - http://daneden.me/animate
@@ -3387,15 +3436,6 @@ body.w-refresh{
     margin: 0;
 }
 
-#paddle{
-    background:#1994f8;
-    width: 200px;
-    height:1em;
-    left:15px;
-    bottom:15px;
-    position: fixed;
-    z-index:1000000;
-}
 
 #level-head-div{
     display: none;
@@ -3431,9 +3471,13 @@ h1#level-heading{
 }
 
 .breakout-bonus{
-    width: 70px; height: 50px; left: 0px; top:0px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);
+    width: 70px; height: 50px; left: 0px; top:0px; position: absolute; border-radius: 20%;
+    background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);
 }
 
+.breakout-bonus.S {
+    background-image: linear-gradient(to bottom, #f5f9fc, #ff0000);
+}
 #overlay{
     background: none;
     width:100%; 
