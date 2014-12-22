@@ -266,7 +266,18 @@ function Bonus(startPoint, type) {
         this.typeInit[this.type]();
     };
 }
-Bonus.types = 'MSTLF';  // Multi, Sticky, Thin, Lazers, Fat
+Bonus.types = 'MSTFL';
+/** 
+ * S - Slow
+ * F - Fast
+ * C - Catch
+ * E - Expand
+ * T - Tiny (shrink)
+ * L - Laser
+ * M - Multiball (disrupt)
+ * P - Player (free life)
+ *
+ **/
 
 var rows;
 if (newMatrix) {
