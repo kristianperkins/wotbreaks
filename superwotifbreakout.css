@@ -1,0 +1,189 @@
+@import "animate-custom.css";
+/*@import "icomoon-style.css";*/
+
+
+
+@keyframes blink {
+    0% { background: cyan; }
+    100% { background: #444; }
+}
+@-webkit-keyframes blink {
+    0% { background: cyan; }
+    100% { background: #444; }
+}
+
+@keyframes L {
+    0% { background: red; }
+    100% { background: #444; }
+}
+@-webkit-keyframes L {
+    0% { background: red; }
+    100% { background: #444; }
+}
+
+
+@keyframes S {
+    0% { background: yellow; }
+    100% { background: #444; }
+}
+
+@-webkit-keyframes S  {
+    0% { background: yellow; }
+    100% { background: #444; }
+}
+
+#paddle {
+    -webkit-animation: blink 0.5s linear infinite;
+    -moz-animation: blink 0.5s linear infinite;
+    -ms-animation: blink 0.5s linear infinite;
+    -o-animation: blink 0.5s linear infinite;
+    animation: blink 0.5s linear infinite;
+    color:white;
+    overflow:hidden;
+    width: 150px;
+    height: 15px;
+    left: 15px;
+    bottom: 15px;
+    z-index: 1000000;
+    display:block;
+    position:fixed;
+    border-radius:50px;
+    border:1px solid #aaa;
+}
+
+.breakout-bonus.S {
+    background-color: yellow;
+}
+
+.breakout-bonus.L {
+    background-color: red;
+}
+
+#paddle.L {
+    -webkit-animation: L 0.5s linear infinite;
+    -moz-animation: L 0.5s linear infinite;
+    -ms-animation: L 0.5s linear infinite;
+    -o-animation: L 0.5s linear infinite;
+    animation: L 0.5s linear infinite;
+}
+
+#paddle.S{
+    -webkit-animation: S 0.5s linear infinite;
+    -moz-animation: S 0.5s linear infinite;
+    -ms-animation: S 0.5s linear infinite;
+    -o-animation: S 0.5s linear infinite;
+    animation: S 0.5s linear infinite;
+}
+
+.gradient-overlay{
+    width: 92%;
+    height: 30px;
+    background: linear-gradient(rgba(100,100,100,.8),rgba(50,50,50,.8));
+    position: absolute;
+    left: 4%;
+}
+
+td.weekday{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+body.w-refresh{
+    background: rgba(0,0,0,.9);
+}
+
+#ball.ball{
+    background:black;
+    width: 20px;
+    height:20px;
+    top:15px;
+    bottom:15px;
+    border-radius: 50%;
+    position: fixed;
+    z-index:1000000;
+    margin: 0;
+}
+
+#level-head-div{
+    display: none;
+    top: 0px;
+    width: 100%;
+ height: auto;
+ position: absolute;
+ background-image: linear-gradient(to bottom, #f5f9fc, #c4cbd1);
+ vertical-align: middle;
+ text-align: centre;
+
+}
+
+#level-heading{
+    text-align: center;
+ margin: auto;
+ padding-top: 5px;
+padding-bottom: 5px;
+ z-index: 9999999
+}
+
+.breakout-level{
+    text-align: right;
+    float: right;
+}
+
+.breakout-score{
+    text-align: right;
+    float: right;
+    padding-right: 2em;
+}
+
+.breakout-bonus{
+    width: 70px; height: 50px; left: 0px; top:0px; position: absolute; border-radius: 20%;
+    background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);
+}
+
+.breakout-bonus.S {
+    background-image: linear-gradient(to bottom, #f5f9fc, #ff0000);
+}
+#overlay{
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select:none;
+    user-select:none;
+    background: none;
+    width:100%;
+    z-index: 9999999999999999;
+    height:100%;
+    position:fixed;
+    top: 0%;
+    left:0%;
+    visibility: block;
+    text-indent: -9999px;
+}
+
+.breakout-score, .breakout-level{
+    font-size: 34px;
+    margin-top: 10px;
+    font-weight: 100;
+    padding-left: 20px;
+}
+
+.w-header__inner.container{
+    padding-bottom: 10px;
+}
+
+.actionIcons{
+    display: none;
+}
+
+.fa-heart, .fa-heart-o{
+    font-size: 24px!important;
+}
+.fa-heart{
+    color:rgb(229, 55, 33);
+}
+.fa-heart-o{
+    color:#b0b0b0;
+}
+
+
