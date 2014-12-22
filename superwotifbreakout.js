@@ -140,6 +140,7 @@ function Bonus(startPoint, type) {
     var off = this.dom.offset();
     this.pos = new Point(startPoint.x, startPoint.y);
     this.killit = null;
+    this.fatt = null;
     this.lzr;
 
 
@@ -155,11 +156,26 @@ function Bonus(startPoint, type) {
             paddle.dom.addClass(this.type);
         }
     }
+    this.fatPaddle = function() {
+        var maxWidth = 350;
+        var $paddle = paddle.dom;
+        window.clearTimeout(this.fatt);
+        window.clearTimeout(this.killit);
+        $paddle.width(maxWidth);
+        var self = this;
+        this.fatt = window.setTimeout(function() {
+            $paddle.width(paddle.width);
+            $paddle.removeClass(self.type);
+        }, 10000);
+    };
+    this.stickyBall = function() {
+        paddle.sticks = 5;
+    };
     this.thinPaddle = function() {
         var minWidth = 100;
         var $paddle = paddle.dom;
         window.clearTimeout(this.killit);
-        console.log('setting to', minWidth);
+        window.clearTimeout(this.fatt);
         $paddle.width(minWidth);
         var self = this;
         this.killit = window.setTimeout(function() {
@@ -226,6 +242,7 @@ function Bonus(startPoint, type) {
         'M': this.multiBall,
         'S': this.stickyBall,
         'T': this.thinPaddle,
+        'F': this.fatPaddle,
         'L': this.lazers
     };
 
@@ -235,6 +252,8 @@ function Bonus(startPoint, type) {
         } else if (this.type == 'S') {
             paddle.sticks = 0;
         } else if (this.type == 'T') {
+            paddle.dom.width(paddle.width);
+        } else if (this.type == 'F') {
             paddle.dom.width(paddle.width);
         } else if (this.type == 'L') {
             paddle.lazermode = false;
@@ -247,7 +266,7 @@ function Bonus(startPoint, type) {
         this.typeInit[this.type]();
     };
 }
-Bonus.types = 'MSTL';  // Multi, Sticky, Thin, Lazers
+Bonus.types = 'MSTLF';  // Multi, Sticky, Thin, Lazers, Fat
 
 var rows;
 if (newMatrix) {
