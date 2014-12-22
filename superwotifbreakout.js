@@ -132,7 +132,7 @@ function Bonus(startPoint, type) {
     }
     this.speed = 200;
     this.v = new Point(0, 1);
-    this.dom = $("<div class='breakout-bonus " + this.type + "'>" + this.type + "</div>");
+    this.dom = $("<div class='breakout-bonus " + this.type + "'></div>");
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
     this.width = this.dom.width();
@@ -286,7 +286,7 @@ function Ball(startPoint, velocity) {
     this.speed = 600;
     this.v = velocity;
     this.phitx = null;
-    this.dom = $("<div id='ball' class='ball' style='width: 20px; height:20px; position: fixed; z-index=1000000; border-radius: 50%; margin: 0; background: radial-gradient(circle at 7px 7px, #CCC, #000);'></div>");
+    this.dom = $("<div id='ball' class='ball'></div>");
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
     this.width = this.dom.width();
@@ -554,31 +554,31 @@ function main() {
             }
         });
 
-        $(window).mouseup(function(e) {
-            if (paddle.lazermode && bullets.length < 6) {
-                var p = paddle.dom.offset();
-                var bullet1 = new Bullet(new Point(p.left + 20, p.top));
-                var bullet2 = new Bullet(new Point(p.left + paddle.dom.width() - 20, p.top));
-                sprites.push(bullet1);
-                sprites.push(bullet2);
-                bullets.push(bullet1);
-                bullets.push(bullet2);
-            }
-            if (paddle.sticks) {
-                for (var i = 0; i < balls.length; i++) {
-                    var b = balls[i];
-                    if (b.stuck) {
-                        b.stuck = false;
-                    }
-                    if (paddle.sticks > 0) {
-                        paddle.sticks--;
-                    }
-                }
-                if (paddle.sticks == 0) {
-                    paddle.dom.removeClass('S');
-                }
-            }
-        });
+        // $(window).mouseup(function(e) {
+        //     if (paddle.lazermode && bullets.length < 6) {
+        //         var p = paddle.dom.offset();
+        //         var bullet1 = new Bullet(new Point(p.left + 20, p.top));
+        //         var bullet2 = new Bullet(new Point(p.left + paddle.dom.width() - 20, p.top));
+        //         sprites.push(bullet1);
+        //         sprites.push(bullet2);
+        //         bullets.push(bullet1);
+        //         bullets.push(bullet2);
+        //     }
+        //     if (paddle.sticks) {
+        //         for (var i = 0; i < balls.length; i++) {
+        //             var b = balls[i];
+        //             if (b.stuck) {
+        //                 b.stuck = false;
+        //             }
+        //             if (paddle.sticks > 0) {
+        //                 paddle.sticks--;
+        //             }
+        //         }
+        //         if (paddle.sticks == 0) {
+        //             paddle.dom.removeClass('S');
+        //         }
+        //     }
+        // });
         var $paddle = paddle.dom;
         var ballheight = 20; // look this up...
         startPos = new Point($paddle.offset().left + $paddle.width() / 2.2, $paddle.offset().top - ballheight );
