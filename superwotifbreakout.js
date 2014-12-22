@@ -82,8 +82,8 @@ function Bullet(startPoint) {
     };
 
 
-    // check intersection of line with points (curr, next) with 
-    // all the active blocks. 
+    // check intersection of line with points (curr, next) with
+    // all the active blocks.
     this.collideBlocks = function(curr, next) {
         var blocks = $('tr.deals:visible').find('td.weekday, td.weekend'); //$$
         var self = this;
@@ -106,7 +106,7 @@ function Bullet(startPoint) {
                     if (Math.random() < 0.4) {
                         // spawn power-up!
                         var bonus = new Bonus(curr);
-                        
+
                         sprites.push(bonus);
                     }
                     // add to score
@@ -319,7 +319,7 @@ function Ball(startPoint, velocity) {
         if (next.x < leftBound) {
             this.v.x = -this.v.x;
             next.x = leftBound;
-        } 
+        }
         if (next.y < topBound) {
             this.v.y = -this.v.y;
             next.y = topBound;
@@ -404,8 +404,8 @@ function Ball(startPoint, velocity) {
     }
 
 
-    // check intersection of line with points (curr, next) with 
-    // all the active blocks. 
+    // check intersection of line with points (curr, next) with
+    // all the active blocks.
     this.collideBlocks = function(curr, next) {
         var blocks = $('tr.deals:visible').find('td.weekday, td.weekend'); //$$
         var self = this;
@@ -439,7 +439,7 @@ function Ball(startPoint, velocity) {
                     if (Math.random() < 0.4) {
                         // spawn power-up!
                         var bonus = new Bonus(curr);
-                        
+
                         sprites.push(bonus);
                     }
                     // add to score
@@ -528,8 +528,8 @@ function main() {
         $(window).resize(function() {
             $('body').height(window.innerHeight);
         });
-        $("<div id='level-head-div' style='display: none; top: 0px; width: 100%; height: auto; position: absolute; background-image: linear-gradient(to bottom, #f5f9fc, #c4cbd1); vertical-align: middle; text-align: centre'><h1 id='level-heading' style='text-align: center; margin: auto; padding-top: 5px;padding-bottom: 5px; z-index: 9999999'>Level X</h1></div>").appendTo("body");
-        $('<div unselectable="on" onselectstart="return false;" id="overlay" style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none; background: none; width:100%; z-index: 9999999999999999; height:100%; position:fixed; top: 0%; left:0%; visibility: block;">:</div>').appendTo('body');
+        $("<div id='level-head-div'><h1 id='level-heading'>Level X</h1></div>").appendTo("body");
+        $('<div unselectable="on" onselectstart="return false;" id="overlay">:</div>').appendTo('body');
         init = true;
         var m = $('#main');
         paddle = new Paddle();
@@ -605,10 +605,14 @@ function main() {
         $('.wrapper-inner').css('height', '100%').css('background-color', '#e8e8e8');
         $('.wrapper-inner').css('height', '100%').css('background-color', '#e8e8e8');
         var hheight = $('.w-header').height();
+
         $('.wrapper-outer').css('height', '100%').css('height', '-= ' + hheight + 'px');  // XXX: This won't work with resize!
-        $(".shortlist-summary").after("<div class='breakout-score' style='text-align: right; float: right; padding-right: 2em;'>SCORE<b>0</b></div>");
-        $(".shortlist-summary").after("<div class='breakout-level' style='text-align: right; float: right;'>LEVEL<b>1</b></div>");
-        $(".shortlist-summary").after(livesDisplay(lives));
+
+
+        $(".w-header__inner.container").html('<a href="http://www.wotif.com/" class="w-logo w-logo--centered">Wotif.com</a><div class="breakout-score">SCORE <b>0</b></div><div class="breakout-level">LEVEL <b>1</b></div>')
+        $(".w-header__inner.container").append(livesDisplay(lives));
+
+
         console.log("lIOADEDED!");
         t0 = window.performance.now();
         window.requestAnimationFrame(step);
@@ -619,13 +623,7 @@ function main() {
        rel: "stylesheet",
        type: "text/css",
         id: "yeah",
-       href: "http://localhost:8000/animate-custom.css"
-    }).appendTo("head");
-    $("<link/>", {
-       rel: "stylesheet",
-       type: "text/css",
-        id: "yeah",
-       href: "http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+       href: "http://localhost:8000/superwotifbreakout.css"
     }).appendTo("head");
 
     $(document).keydown(function(e) {
