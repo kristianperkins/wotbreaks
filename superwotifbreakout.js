@@ -554,31 +554,31 @@ function main() {
             }
         });
 
-        // $(window).mouseup(function(e) {
-        //     if (paddle.lazermode && bullets.length < 6) {
-        //         var p = paddle.dom.offset();
-        //         var bullet1 = new Bullet(new Point(p.left + 20, p.top));
-        //         var bullet2 = new Bullet(new Point(p.left + paddle.dom.width() - 20, p.top));
-        //         sprites.push(bullet1);
-        //         sprites.push(bullet2);
-        //         bullets.push(bullet1);
-        //         bullets.push(bullet2);
-        //     }
-        //     if (paddle.sticks) {
-        //         for (var i = 0; i < balls.length; i++) {
-        //             var b = balls[i];
-        //             if (b.stuck) {
-        //                 b.stuck = false;
-        //             }
-        //             if (paddle.sticks > 0) {
-        //                 paddle.sticks--;
-        //             }
-        //         }
-        //         if (paddle.sticks == 0) {
-        //             paddle.dom.removeClass('S');
-        //         }
-        //     }
-        // });
+        $(window).mouseup(function(e) {
+            if (paddle.lazermode && bullets.length < 6) {
+                var p = paddle.dom.offset();
+                var bullet1 = new Bullet(new Point(p.left + 20, p.top));
+                var bullet2 = new Bullet(new Point(p.left + paddle.dom.width() - 20, p.top));
+                sprites.push(bullet1);
+                sprites.push(bullet2);
+                bullets.push(bullet1);
+                bullets.push(bullet2);
+            }
+            if (paddle.sticks) {
+                for (var i = 0; i < balls.length; i++) {
+                    var b = balls[i];
+                    if (b.stuck) {
+                        b.stuck = false;
+                    }
+                    if (paddle.sticks > 0) {
+                        paddle.sticks--;
+                    }
+                }
+                if (paddle.sticks == 0) {
+                    paddle.dom.removeClass('S');
+                }
+            }
+        });
         var $paddle = paddle.dom;
         var ballheight = 20; // look this up...
         startPos = new Point($paddle.offset().left + $paddle.width() / 2.2, $paddle.offset().top - ballheight );
