@@ -132,7 +132,7 @@ function Bonus(startPoint, type) {
     }
     this.speed = 200;
     this.v = new Point(0, 1);
-    this.dom = $("<div class='breakout-bonus " + this.type + "' style='width: 30px; height: 30px; left: 0px; top:0px; position: absolute; border-radius: 20%; background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);'>" + this.type + "</div>");
+    this.dom = $("<div class='breakout-bonus " + this.type + "' style='width: 30px; height: 30px; left: 0px; top:0px; position: absolute; border-radius: 20%;'>" + this.type + "</div>");
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
     this.width = this.dom.width();
@@ -152,6 +152,7 @@ function Bonus(startPoint, type) {
             // power up hit the paddle
             this.startBonus();
             this.kill();
+            paddle.dom.addClass(type);
         }
     }
     this.thinPaddle = function() {
@@ -268,12 +269,12 @@ function Ball(startPoint, velocity) {
         if (this.stuck) {
             return;
         }
-        var nextPos = new Point(this.pos.x + dt * this.v.x * this.speed,
-                                this.pos.y + dt * this.v.y * this.speed);
-        this.collideWindow(this.pos, nextPos);
-        this.collideBlocks(this.pos, nextPos);
-        this.collidePaddle(this.pos, nextPos);
-        this.pos = nextPos;
+        this.nextPos = new Point(this.pos.x + dt * this.v.x * this.speed,
+                                 this.pos.y + dt * this.v.y * this.speed);
+        this.collideWindow(this.pos, this.nextPos);
+        this.collideBlocks(this.pos, this.nextPos);
+        this.collidePaddle(this.pos, this.nextPos);
+        this.pos = this.nextPos;
         this.dom.offset({
             left: this.pos.x,
             top: this.pos.y
@@ -356,7 +357,16 @@ function Ball(startPoint, velocity) {
             // reflect x based on distance from the midpoint
             this.phitx = next.x - off.left;
             if (paddle.sticks) {
+                //var pwidth = paddle.dom.width();
                 this.stuck = true;
+                var btop = $paddle.offset().top - this.height;
+                this.dom.offset({
+                    //left: bleft + phitx,
+                    top: btop
+                });
+                //b.pos.x = bleft + phitx;
+                //this.pos.y = btop;
+                this.nextPos.y = btop;
             }
             var dist = (next.x - off.left) / w;  // dist along paddle, 0->1
             var theta = 7/8 * PI - dist * 6/8 * PI;  // curve along paddle, 7PI/8 -> PI/8
@@ -535,6 +545,9 @@ function main() {
                     if (paddle.sticks > 0) {
                         paddle.sticks--;
                     }
+                }
+                if (paddle.sticks == 0) {
+                    paddle.dom.removeClass('S');
                 }
             }
         });

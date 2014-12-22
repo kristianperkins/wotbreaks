@@ -7,6 +7,15 @@
     100% { background: #444; }
 }
 
+@keyframes s {  
+    0% { background: red; }
+    100% { background: #444; }
+}
+@-webkit-keyframes s {
+    0% { background: red; }
+    100% { background: #444; }
+}
+
 #paddle {
     -webkit-animation: blink 0.5s linear infinite;
     -moz-animation: blink 0.5s linear infinite;
@@ -30,13 +39,18 @@
     background-color: red;
 }
 
-#paddle{
+#paddle.S{
     /*background:#1994f8;
     width: 200px;
     left:15px;
     bottom:15px;
     position: fixed;
     z-index:1000000;*/
+    -webkit-animation: s 0.5s linear infinite;
+    -moz-animation: s 0.5s linear infinite;
+    -ms-animation: s 0.5s linear infinite;
+    -o-animation: s 0.5s linear infinite;
+    animation: s 0.5s linear infinite;
 }
 
 .gradient-overlay{
