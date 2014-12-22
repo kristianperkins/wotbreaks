@@ -152,7 +152,7 @@ function Bonus(startPoint, type) {
             // power up hit the paddle
             this.startBonus();
             this.kill();
-            paddle.dom.addClass(type);
+            paddle.dom.addClass(this.type);
         }
     }
     this.thinPaddle = function() {
