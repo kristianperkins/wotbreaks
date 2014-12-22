@@ -132,7 +132,7 @@ function Bonus(startPoint, type) {
     }
     this.speed = 200;
     this.v = new Point(0, 1);
-    this.dom = $("<div class='breakout-bonus " + this.type + "' style='width: 30px; height: 30px; left: 0px; top:0px; position: absolute; border-radius: 20%;'>" + this.type + "</div>");
+    this.dom = $("<div class='breakout-bonus " + this.type + "'>" + this.type + "</div>");
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
     this.width = this.dom.width();
