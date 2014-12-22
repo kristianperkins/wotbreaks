@@ -625,6 +625,13 @@ function main() {
         id: "yeah",
        href: "http://localhost:8000/superwotifbreakout.css"
     }).appendTo("head");
+    $("<link/>", {
+       rel: "stylesheet",
+       type: "text/css",
+        id: "font-awesome-stylesheet",
+       href: "http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+    }).appendTo("head");
+
 
     $(document).keydown(function(e) {
         console.log(e);
@@ -665,9 +672,9 @@ function livesDisplay(lives) {
     var div = "<div id='lives-div' class='info lives-div'><ul class='starRating' data-rating='" + lives + "'>";
     for (var i = 0; i < 5; i++) {
         if (i < lives) {
-            div += "<li><i class='icon-bullet'></i></li>";
+            div += "<li><i class='fa fa-heart'></i></li>";
         } else {
-            div += "<li><i class='icon-bullet-half'></i></li>";
+            div += "<li><i class='fa fa-heart-o'></i></li>";
         }
     }
     div += "</ul></div>";

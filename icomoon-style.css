@@ -1,0 +1,103 @@
+@font-face {
+	font-family: 'icomoon';
+	src:url('fonts/icomoon.eot?ay0x23');
+	src:url('fonts/icomoon.eot?#iefixay0x23') format('embedded-opentype'),
+		url('fonts/icomoon.woff?ay0x23') format('woff'),
+		url('fonts/icomoon.ttf?ay0x23') format('truetype'),
+		url('fonts/icomoon.svg?ay0x23#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-pacman:before {
+	content: "\e600";
+}
+.icon-baseball:before {
+	content: "\e601";
+}
+.icon-soccer:before {
+	content: "\e602";
+}
+.icon-transformers:before {
+	content: "\e603";
+}
+.icon-batman:before {
+	content: "\e604";
+}
+.icon-spaceinvaders:before {
+	content: "\e605";
+}
+.icon-skeletor:before {
+	content: "\e606";
+}
+.icon-pil:before {
+	content: "\e607";
+}
+.icon-diamond:before {
+	content: "\e608";
+}
+.icon-radioactive:before {
+	content: "\e609";
+}
+.icon-heart:before {
+	content: "\e60a";
+}
+.icon-lightning:before {
+	content: "\e60b";
+}
+.icon-cloudy:before {
+	content: "\e60c";
+}
+.icon-car:before {
+	content: "\e60d";
+}
+.icon-bike:before {
+	content: "\e60e";
+}
+.icon-truck:before {
+	content: "\e60f";
+}
+.icon-bus:before {
+	content: "\e610";
+}
+.icon-bike2:before {
+	content: "\e611";
+}
+.icon-plane:before {
+	content: "\e612";
+}
+.icon-rocket:before {
+	content: "\e613";
+}
+.icon-play:before {
+	content: "\e614";
+}
+.icon-pause:before {
+	content: "\e615";
+}
+.icon-twitter:before {
+	content: "\e616";
+}
+.icon-facebook:before {
+	content: "\e617";
+}
+.icon-googleplus:before {
+	content: "\e618";
+}
+.icon-linkedin:before {
+	content: "\e619";
+}

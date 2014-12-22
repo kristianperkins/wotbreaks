@@ -1,5 +1,6 @@
-@import url("http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css");
 @import "animate-custom.css";
+/*@import "icomoon-style.css";*/
+
 
 
 @keyframes blink {
@@ -157,6 +158,7 @@ padding-bottom: 5px;
     top: 0%;
     left:0%;
     visibility: block;
+    text-indent: -9999px;
 }
 
 .breakout-score, .breakout-level{
@@ -172,6 +174,16 @@ padding-bottom: 5px;
 
 .actionIcons{
     display: none;
+}
+
+.fa-heart, .fa-heart-o{
+    font-size: 24px!important;
+}
+.fa-heart{
+    color:rgb(229, 55, 33);
+}
+.fa-heart-o{
+    color:#b0b0b0;
 }
 
 
