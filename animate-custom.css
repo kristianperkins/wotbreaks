@@ -7,12 +7,23 @@
     100% { background: #444; }
 }
 
-@keyframes s {  
+@keyframes L { 
     0% { background: red; }
     100% { background: #444; }
 }
-@-webkit-keyframes s {
+@-webkit-keyframes L { 
     0% { background: red; }
+    100% { background: #444; }
+}
+
+
+@keyframes S {  
+    0% { background: yellow; }
+    100% { background: #444; }
+}
+
+@-webkit-keyframes S  {  
+    0% { background: yellow; }
     100% { background: #444; }
 }
 
@@ -33,24 +44,30 @@
     position:fixed;
     border-radius:50px;
     border:1px solid #aaa;
-} 
+}
 
 .breakout-bonus.S {
+    background-color: yellow;
+}
+
+.breakout-bonus.L {
     background-color: red;
 }
 
+#paddle.L {
+    -webkit-animation: L 0.5s linear infinite;
+    -moz-animation: L 0.5s linear infinite;
+    -ms-animation: L 0.5s linear infinite;
+    -o-animation: L 0.5s linear infinite;
+    animation: L 0.5s linear infinite;
+}
+
 #paddle.S{
-    /*background:#1994f8;
-    width: 200px;
-    left:15px;
-    bottom:15px;
-    position: fixed;
-    z-index:1000000;*/
-    -webkit-animation: s 0.5s linear infinite;
-    -moz-animation: s 0.5s linear infinite;
-    -ms-animation: s 0.5s linear infinite;
-    -o-animation: s 0.5s linear infinite;
-    animation: s 0.5s linear infinite;
+    -webkit-animation: S 0.5s linear infinite;
+    -moz-animation: S 0.5s linear infinite;
+    -ms-animation: S 0.5s linear infinite;
+    -o-animation: S 0.5s linear infinite;
+    animation: S 0.5s linear infinite;
 }
 
 .gradient-overlay{

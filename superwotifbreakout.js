@@ -161,7 +161,11 @@ function Bonus(startPoint, type) {
         window.clearTimeout(this.killit);
         console.log('setting to', minWidth);
         $paddle.width(minWidth);
-        this.killit = window.setTimeout(function() { $paddle.width(paddle.width); }, 5000);
+        var self = this;
+        this.killit = window.setTimeout(function() {
+            $paddle.width(paddle.width);
+            $paddle.removeClass(self.type);
+        }, 5000);
     };
     this.stickyBall = function() {
         paddle.sticks = 5;
@@ -169,7 +173,11 @@ function Bonus(startPoint, type) {
     this.lazers = function() {
         paddle.lazermode = true;
         window.clearTimeout(this.lzr);
-        this.lzr = window.setTimeout(function() { paddle.lazermode = false; }, 5000);
+        var self = this;
+        this.lzr = window.setTimeout(function() {
+            paddle.lazermode = false;
+            paddle.dom.removeClass(self.type);
+        }, 5000);
     };
     this.multiBall = function() {
         var b0 = balls[0];
@@ -231,6 +239,7 @@ function Bonus(startPoint, type) {
         } else if (this.type == 'L') {
             paddle.lazermode = false;
         }
+        paddle.dom.removeClass(this.type);
         this.typeInit[this.type]();
     };
 
@@ -327,7 +336,7 @@ function Ball(startPoint, velocity) {
             var $paddle = paddle.dom;
             paddle.sticks = 1;
             var ballheight = 20;
-            startPos = new Point($paddle.offset().left + $paddle.width() / 2.2, $paddle.offset().top - ballheight - $paddle.height());
+            startPos = new Point($paddle.offset().left + $paddle.width() / 2.2, $paddle.offset().top - ballheight);
             ball = new Ball(startPos, new Point(0, 1));
             ball.stuck = true;
             ball.phitx = startPos.x - $paddle.offset().left;
