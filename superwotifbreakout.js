@@ -601,14 +601,9 @@ function main() {
         $(".shortlist-summary").hide();
         $('.w-footer').hide();
         $('pre').hide();  //  What is this thing?
-        $('.wrapper-outer').css('height', '100%');
-        $('.wrapper-inner').css('height', '100%').css('background-color', '#e8e8e8');
-        $('.wrapper-inner').css('height', '100%').css('background-color', '#e8e8e8');
         var hheight = $('.w-header').height();
 
         $('.wrapper-outer').css('height', '100%').css('height', '-= ' + hheight + 'px');  // XXX: This won't work with resize!
-
-
         $(".w-header__inner.container").html('<a href="http://www.wotif.com/" class="w-logo w-logo--centered">Wotif.com</a><div class="breakout-score">SCORE <b>0</b></div><div class="breakout-level">LEVEL <b>1</b></div>')
         $(".w-header__inner.container").append(livesDisplay(lives));
 

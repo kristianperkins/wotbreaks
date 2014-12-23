@@ -1,5 +1,14 @@
 
 /*@import "icomoon-style.css";*/
+.wrapper-outer{
+    height:100%!important;
+}
+body.static.w-refresh .wrapper-inner{
+    height:100%!important;
+    background:#e8e8e8!important;
+    padding: 0!important;
+}
+
 
 .gradient-overlay{
     width: 94.5%;
@@ -9,16 +18,12 @@
     left: 2.5%;
 }
 
-td.weekday{
+.matrix-body td{
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
 
-
-body.w-refresh{
-    background: rgba(0,0,0,.9);
-}
 
 #ball.ball{
     width: 20px;
@@ -30,6 +35,7 @@ body.w-refresh{
     left: 1278.19549005682px;
     box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 3px;
     background: radial-gradient(circle at 0px 0px, rgb(220, 220, 220), rgb(80, 80, 80));
+    transform: translateZ(0);
 }
 
 #level-head-div{
@@ -108,17 +114,7 @@ body.w-refresh{
     color:#b0b0b0;
 }
 
-.bullet{
-    width: 5px;
-    height: 15px;
-    border-radius-top-left: 5px;
-    border-radius-top-right: 5px;
-    position: absolute;
-    background:rgb(0, 216, 255); /*CYAN*/
-    color:rgb(0, 216, 255);
-    transform: translateZ(0);
 
-}
 
 
 /*  BONUSES
@@ -128,7 +124,16 @@ body.w-refresh{
     'F': this.fatPaddle,
     'L': this.lazers
 */
-
+.bullet{
+    width: 5px;
+    height: 15px;
+    border-radius-top-left: 5px;
+    border-radius-top-right: 5px;
+    position: absolute;
+    background:rgb(0, 216, 255); /*CYAN*/
+    color:rgb(0, 216, 255);
+    transform: translateZ(0);
+}
 .breakout-bonus{
     width: 55px;
     text-align: center;
