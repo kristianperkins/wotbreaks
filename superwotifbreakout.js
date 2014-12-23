@@ -132,7 +132,7 @@ function Bonus(startPoint, type) {
     }
     this.speed = 200;
     this.v = new Point(0, 1);
-    this.dom = $("<div class='breakout-bonus " + this.type + "' style='width: 30px; height: 30px; left: 0px; top:0px; position: absolute; border-radius: 20%;'>" + this.type + "</div>");
+    this.dom = $("<div class='breakout-bonus " + this.type + "'></div>");
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
     this.width = this.dom.width();
@@ -297,7 +297,7 @@ function Ball(startPoint, velocity) {
     this.speed = 600;
     this.v = velocity;
     this.phitx = null;
-    this.dom = $("<div id='ball' class='ball' style='width: 20px; height:20px; position: fixed; z-index=1000000; border-radius: 50%; margin: 0; background: radial-gradient(circle at 7px 7px, #CCC, #000);'></div>");
+    this.dom = $("<div id='ball' class='ball'></div>");
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
     this.width = this.dom.width();

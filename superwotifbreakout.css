@@ -33,22 +33,22 @@
 }
 
 #paddle {
-    -webkit-animation: blink 0.5s linear infinite;
-    -moz-animation: blink 0.5s linear infinite;
-    -ms-animation: blink 0.5s linear infinite;
-    -o-animation: blink 0.5s linear infinite;
-    animation: blink 0.5s linear infinite;
-    color:white;
-    overflow:hidden;
+    -webkit-animation: blink 0.7s linear infinite;
+    -moz-animation: blink 0.7s linear infinite;
+    -ms-animation: blink 0.7s linear infinite;
+    -o-animation: blink 0.7s linear infinite;
+    animation: blink 0.7s linear infinite;
+    color: white;
+    overflow: hidden;
     width: 150px;
     height: 15px;
     left: 15px;
     bottom: 15px;
     z-index: 1000000;
-    display:block;
-    position:fixed;
-    border-radius:50px;
-    border:1px solid #aaa;
+    display: block;
+    position: fixed;
+    border-radius: 50px;
+    box-shadow: 2px 8px 10px rgba(0,0,0,.3);
 }
 
 .breakout-bonus.S {
@@ -76,11 +76,11 @@
 }
 
 .gradient-overlay{
-    width: 92%;
+    width: 94.5%;
     height: 30px;
-    background: linear-gradient(rgba(100,100,100,.8),rgba(50,50,50,.8));
+    background: linear-gradient(rgb(140,140,140),rgb(30,30,30));
     position: absolute;
-    left: 4%;
+    left: 2.5%;
 }
 
 td.weekday{
@@ -95,35 +95,39 @@ body.w-refresh{
 }
 
 #ball.ball{
-    background:black;
     width: 20px;
-    height:20px;
-    top:15px;
-    bottom:15px;
-    border-radius: 50%;
+    height: 20px;
     position: fixed;
-    z-index:1000000;
-    margin: 0;
+    border-radius: 50%;
+    margin: 0px;
+    top: 947px;
+    left: 1278.19549005682px;
+    box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 3px;
+    background: radial-gradient(circle at 0px 0px, rgb(220, 220, 220), rgb(80, 80, 80));
 }
 
 #level-head-div{
     display: none;
     top: 0px;
+    bottom: 0px;
     width: 100%;
- height: auto;
- position: absolute;
- background-image: linear-gradient(to bottom, #f5f9fc, #c4cbd1);
- vertical-align: middle;
- text-align: centre;
-
+    height: auto;
+    position: absolute;
+    background: rgba(10,10,10,.7);
+    text-align: center;
+    z-index: 1000001;
+    padding-top: 20%;
 }
 
 #level-heading{
-    text-align: center;
- margin: auto;
- padding-top: 5px;
-padding-bottom: 5px;
- z-index: 9999999
+    font-family: "Avenir Next",Avenir,"Open Sans",Helvetica,Arial,sans-serif;
+    margin: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: inline;
+    font-weight: 100;
+    color: white;
+    font-size: 44px;
 }
 
 .breakout-level{
@@ -137,10 +141,7 @@ padding-bottom: 5px;
     padding-right: 2em;
 }
 
-.breakout-bonus{
-    width: 70px; height: 50px; left: 0px; top:0px; position: absolute; border-radius: 20%;
-    background-image: linear-gradient(to bottom, #f5f9fc, #d1dbe4);
-}
+
 
 .breakout-bonus.S {
     background-image: linear-gradient(to bottom, #f5f9fc, #ff0000);
@@ -152,12 +153,12 @@ padding-bottom: 5px;
     user-select:none;
     background: none;
     width:100%;
-    z-index: 9999999999999999;
+    z-index: 1000000;
     height:100%;
     position:fixed;
     top: 0%;
     left:0%;
-    visibility: block;
+    visibility: visible;
     text-indent: -9999px;
 }
 
@@ -185,5 +186,49 @@ padding-bottom: 5px;
 .fa-heart-o{
     color:#b0b0b0;
 }
+
+
+/*  BONUSES
+        'M': this.multiBall,
+        'S': this.stickyBall,
+        'T': this.thinPaddle,
+        'F': this.fatPaddle,
+        'L': this.lazers
+*/
+
+.breakout-bonus{
+    width: 40px;
+    text-align: center;
+    padding: 2px;
+    height: auto;
+    border-radius: 20px;
+    color: white;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    display: inline-block;
+    font: normal normal normal 24px/1 FontAwesome;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(#666,#444);
+}
+
+.breakout-bonus.L{background-color: rgb(255, 136, 0);}
+.breakout-bonus.L:before {content: "\f135";}
+
+.breakout-bonus.M{ background-color: rgb(255, 136, 0);}
+.breakout-bonus.M:before { content: "\f135";}
+
+.breakout-bonus.S{ background-color: rgb(255, 136, 0);}
+.breakout-bonus.S:before { content: "\f135";}
+
+.breakout-bonus.T{ background-color: rgb(255, 136, 0);}
+.breakout-bonus.T:before { content: "\f135";}
+
+.breakout-bonus.F{ background-color: rgb(255, 136, 0);}
+.breakout-bonus.F:before { content: "\f135";}
+
+
 
 
