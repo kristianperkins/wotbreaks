@@ -1,79 +1,5 @@
-@import "animate-custom.css";
+
 /*@import "icomoon-style.css";*/
-
-
-
-@keyframes blink {
-    0% { background: cyan; }
-    100% { background: #444; }
-}
-@-webkit-keyframes blink {
-    0% { background: cyan; }
-    100% { background: #444; }
-}
-
-@keyframes L {
-    0% { background: red; }
-    100% { background: #444; }
-}
-@-webkit-keyframes L {
-    0% { background: red; }
-    100% { background: #444; }
-}
-
-
-@keyframes S {
-    0% { background: yellow; }
-    100% { background: #444; }
-}
-
-@-webkit-keyframes S  {
-    0% { background: yellow; }
-    100% { background: #444; }
-}
-
-#paddle {
-    -webkit-animation: blink 0.7s linear infinite;
-    -moz-animation: blink 0.7s linear infinite;
-    -ms-animation: blink 0.7s linear infinite;
-    -o-animation: blink 0.7s linear infinite;
-    animation: blink 0.7s linear infinite;
-    color: white;
-    overflow: hidden;
-    width: 150px;
-    height: 15px;
-    left: 15px;
-    bottom: 15px;
-    z-index: 1000000;
-    display: block;
-    position: fixed;
-    border-radius: 50px;
-    box-shadow: 2px 8px 10px rgba(0,0,0,.3);
-}
-
-.breakout-bonus.S {
-    background-color: yellow;
-}
-
-.breakout-bonus.L {
-    background-color: red;
-}
-
-#paddle.L {
-    -webkit-animation: L 0.5s linear infinite;
-    -moz-animation: L 0.5s linear infinite;
-    -ms-animation: L 0.5s linear infinite;
-    -o-animation: L 0.5s linear infinite;
-    animation: L 0.5s linear infinite;
-}
-
-#paddle.S{
-    -webkit-animation: S 0.5s linear infinite;
-    -moz-animation: S 0.5s linear infinite;
-    -ms-animation: S 0.5s linear infinite;
-    -o-animation: S 0.5s linear infinite;
-    animation: S 0.5s linear infinite;
-}
 
 .gradient-overlay{
     width: 94.5%;
@@ -141,11 +67,6 @@ body.w-refresh{
     padding-right: 2em;
 }
 
-
-
-.breakout-bonus.S {
-    background-image: linear-gradient(to bottom, #f5f9fc, #ff0000);
-}
 #overlay{
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -187,19 +108,31 @@ body.w-refresh{
     color:#b0b0b0;
 }
 
+.bullet{
+    width: 5px;
+    height: 15px;
+    border-radius-top-left: 5px;
+    border-radius-top-right: 5px;
+    position: absolute;
+    background:rgb(0, 216, 255); /*CYAN*/
+    color:rgb(0, 216, 255);
+    transform: translateZ(0);
+
+}
+
 
 /*  BONUSES
-        'M': this.multiBall,
-        'S': this.stickyBall,
-        'T': this.thinPaddle,
-        'F': this.fatPaddle,
-        'L': this.lazers
+    'M': this.multiBall,
+    'S': this.stickyBall,
+    'T': this.thinPaddle,
+    'F': this.fatPaddle,
+    'L': this.lazers
 */
 
 .breakout-bonus{
-    width: 40px;
+    width: 55px;
     text-align: center;
-    padding: 2px;
+    padding: 4px;
     height: auto;
     border-radius: 20px;
     color: white;
@@ -207,28 +140,110 @@ body.w-refresh{
     top: 50%;
     position: absolute;
     display: inline-block;
-    font: normal normal normal 24px/1 FontAwesome;
+    font: normal normal normal 12px/1 'Open Sans Condensed';
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: linear-gradient(#666,#444);
+    background: #444;
+    font-weight: 800;
+    transform: translateZ(0);
 }
 
-.breakout-bonus.L{background-color: rgb(255, 136, 0);}
-.breakout-bonus.L:before {content: "\f135";}
-
-.breakout-bonus.M{ background-color: rgb(255, 136, 0);}
-.breakout-bonus.M:before { content: "\f135";}
-
-.breakout-bonus.S{ background-color: rgb(255, 136, 0);}
-.breakout-bonus.S:before { content: "\f135";}
-
-.breakout-bonus.T{ background-color: rgb(255, 136, 0);}
-.breakout-bonus.T:before { content: "\f135";}
-
-.breakout-bonus.F{ background-color: rgb(255, 136, 0);}
-.breakout-bonus.F:before { content: "\f135";}
 
 
+/*
+blue: rgb(25, 148, 248);
+cyan: rgb(0, 216, 255);
+lime: rgb(149, 221, 2);
+pink: rgb(255, 0, 213);
+coral: rgb(255, 0, 97);
+orange: rgb(255, 136, 0);
+red: rgb(221, 35, 2);
+*/
 
 
+.breakout-bonus.L{background: rgb(0, 216, 255);} /*cyan*/
+.breakout-bonus.L:before {content: "LAZERS";}
+
+.breakout-bonus.M{ background: rgb(149, 221, 2);}  /*lime*/
+.breakout-bonus.M:before { content: "MULTI-B";}
+
+.breakout-bonus.S{ background: rgb(255, 0, 213);}  /*pink*/
+.breakout-bonus.S:before { content: "STICKY-P";}
+
+.breakout-bonus.T{ background: rgb(25, 148, 248);}  /*blue */
+.breakout-bonus.T:before { content: "THIN-P";}
+
+.breakout-bonus.F{ background: rgb(255, 136, 0);} /*orange*/
+.breakout-bonus.F:before { content: "FAT-P";}
+
+
+
+
+/*PADDLES*/
+
+@keyframes blink {
+    0% { background: cyan; }
+    100% { background: #444; }
+}
+@-webkit-keyframes blink {
+    0% { background: cyan; }
+    100% { background: #444; }
+}
+
+@keyframes L {
+    0% { background: red; }
+    100% { background: #444; }
+}
+@-webkit-keyframes L {
+    0% { background: red; }
+    100% { background: #444; }
+}
+
+
+@keyframes S {
+    0% { background: yellow; }
+    100% { background: #444; }
+}
+
+@-webkit-keyframes S  {
+    0% { background: yellow; }
+    100% { background: #444; }
+}
+
+#paddle {
+    -webkit-animation: blink 0.7s linear infinite;
+    -moz-animation: blink 0.7s linear infinite;
+    -ms-animation: blink 0.7s linear infinite;
+    -o-animation: blink 0.7s linear infinite;
+    animation: blink 0.7s linear infinite;
+    color: white;
+    overflow: hidden;
+    width: 150px;
+    height: 15px;
+    left: 15px;
+    bottom: 15px;
+    z-index: 1000000;
+    display: block;
+    position: fixed;
+    border-radius: 50px;
+    box-shadow: 2px 8px 10px rgba(0,0,0,.3);
+    transform: translateZ(0);
+}
+
+
+#paddle.L {
+    -webkit-animation: L 0.5s linear infinite;
+    -moz-animation: L 0.5s linear infinite;
+    -ms-animation: L 0.5s linear infinite;
+    -o-animation: L 0.5s linear infinite;
+    animation: L 0.5s linear infinite;
+}
+
+#paddle.S{
+    -webkit-animation: S 0.5s linear infinite;
+    -moz-animation: S 0.5s linear infinite;
+    -ms-animation: S 0.5s linear infinite;
+    -o-animation: S 0.5s linear infinite;
+    animation: S 0.5s linear infinite;
+}
