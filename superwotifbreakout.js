@@ -40,7 +40,7 @@ function rchoice(lst) {
 
 
 function Bullet(startPoint) {
-    this.dom = $('<div class="bullet" style="width: 5px; height: 15px; position: absolute; background: red;">I</div>');
+    this.dom = $('<div class="bullet">I</div>');
     this.speed = 600;
     this.v = new Point(0, -1);
     this.dom.offset({top: startPoint.y, left: startPoint.x});
@@ -642,6 +642,14 @@ function main() {
         id: "font-awesome-stylesheet",
        href: "http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
     }).appendTo("head");
+    $("<link/>", {
+       rel: "stylesheet",
+       type: "text/css",
+        id: "opensanscondensed-stylesheet",
+       href: "http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700"
+    }).appendTo("head");
+
+
 
 
     $(document).keydown(function(e) {
