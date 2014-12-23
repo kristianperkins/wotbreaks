@@ -109,21 +109,25 @@ body.w-refresh{
 #level-head-div{
     display: none;
     top: 0px;
+    bottom: 0px;
     width: 100%;
- height: auto;
- position: absolute;
- background-image: linear-gradient(to bottom, #f5f9fc, #c4cbd1);
- vertical-align: middle;
- text-align: centre;
-
+    height: auto;
+    position: absolute;
+    background: rgba(10,10,10,.7);
+    text-align: center;
+    z-index: 1000001;
+    padding-top: 20%;
 }
 
 #level-heading{
-    text-align: center;
- margin: auto;
- padding-top: 5px;
-padding-bottom: 5px;
- z-index: 9999999
+    font-family: "Avenir Next",Avenir,"Open Sans",Helvetica,Arial,sans-serif;
+    margin: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: inline;
+    font-weight: 100;
+    color: white;
+    font-size: 44px;
 }
 
 .breakout-level{
@@ -149,12 +153,12 @@ padding-bottom: 5px;
     user-select:none;
     background: none;
     width:100%;
-    z-index: 9999999999999999;
+    z-index: 1000000;
     height:100%;
     position:fixed;
     top: 0%;
     left:0%;
-    visibility: block;
+    visibility: visible;
     text-indent: -9999px;
 }
 
@@ -210,19 +214,19 @@ padding-bottom: 5px;
     background: linear-gradient(#666,#444);
 }
 
-.breakout-bonus.L{color: rgb(255, 136, 0);}
+.breakout-bonus.L{background-color: rgb(255, 136, 0);}
 .breakout-bonus.L:before {content: "\f135";}
 
-.breakout-bonus.M{ color: rgb(255, 136, 0);}
+.breakout-bonus.M{ background-color: rgb(255, 136, 0);}
 .breakout-bonus.M:before { content: "\f135";}
 
-.breakout-bonus.S{ color: rgb(255, 136, 0);}
+.breakout-bonus.S{ background-color: rgb(255, 136, 0);}
 .breakout-bonus.S:before { content: "\f135";}
 
-.breakout-bonus.T{ color: rgb(255, 136, 0);}
+.breakout-bonus.T{ background-color: rgb(255, 136, 0);}
 .breakout-bonus.T:before { content: "\f135";}
 
-.breakout-bonus.F{ color: rgb(255, 136, 0);}
+.breakout-bonus.F{ background-color: rgb(255, 136, 0);}
 .breakout-bonus.F:before { content: "\f135";}
 
 
