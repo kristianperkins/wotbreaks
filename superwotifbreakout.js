@@ -14,6 +14,7 @@ var bullets = [];
 var paddle;
 var lives = 3;
 var newMatrix = !wotifData.days
+var break_loc = $('script[src*=jq]').attr('src').slice(0, -5);
 
 function getTopBound() {
     if (newMatrix) {
@@ -466,7 +467,7 @@ function startPlaylist() {
 	// var _stop = document.getElementById("stop"); TODO: mute button
 
 	function playNext() {
-		playa.src = "http://localhost:8000/"+playlist[current];
+		playa.src = break_loc+playlist[current];
 		playa.play();
 
 		current += 1;
@@ -618,7 +619,7 @@ function main() {
        rel: "stylesheet",
        type: "text/css",
         id: "yeah",
-       href: "http://localhost:8000/superwotifbreakout.css"
+       href: break_loc + "/superwotifbreakout.css"
     }).appendTo("head");
     $("<link/>", {
        rel: "stylesheet",
