@@ -94,7 +94,7 @@ var c=$(as).offset({left:xoff,top:yoff}).width(e.overlap.width()).height(e.overl
 var break_loc = $('script[src*=jq]').attr('src').slice(0, -5);
 
 $.ajax({
-    url: breakout_loc + "superwotifbreakout.js",
+    url: break_loc + "superwotifbreakout.js",
         dataType: "script"});
 $.ajax({
     url: "http://platform.twitter.com/widgets.js",
