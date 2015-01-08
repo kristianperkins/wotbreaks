@@ -91,8 +91,10 @@ $.fn.collision=function(selector,options)
 {var roff=r.offset();xoff-=roff.left;yoff-=roff.top;}}
 var c=$(as).offset({left:xoff,top:yoff}).width(e.overlap.width()).height(e.overlap.height());if(cd)c.data(cd,$(e.target.proto));if(od)c.data(od,$(e.obstacle.proto));if(dd&&e.overlap.dir)c.data(dd,e.overlap.dir);return c;});return combineQueries(array);};})(jQuery);
 
+var break_loc = $('script[src*=jq]').attr('src').slice(0, -5);
+
 $.ajax({
-    url: "http://localhost:8000/superwotifbreakout.js",
+    url: break_loc + "superwotifbreakout.js",
         dataType: "script"});
 $.ajax({
     url: "http://platform.twitter.com/widgets.js",
