@@ -34,7 +34,9 @@ function Game() {
     this.moveBallToStartPos = function(ball) {
         var startPos = this.getBallStartPos();
         ball.stuck = true;
-        ball.phitx = startPos.x;
+        ball.phitx = this.paddle.dom.width() / 2.2;
+        ball.pos = startPos;
+        ball.dom.offset({left: startPos.x, top: startPos.y});
     };
 
 
@@ -102,19 +104,17 @@ function Game() {
                     self.bullets.push(bullet1);
                     self.bullets.push(bullet2);
                 }
-                if (self.paddle.sticks) {
-                    for (var i = 0; i < self.balls.length; i++) {
-                        var b = self.balls[i];
-                        if (b.stuck) {
-                            b.stuck = false;
-                        }
-                        if (self.paddle.sticks > 0) {
-                            self.paddle.sticks--;
-                        }
+                for (var i = 0; i < self.balls.length; i++) {
+                    var b = self.balls[i];
+                    if (b.stuck) {
+                        b.stuck = false;
                     }
-                    if (self.paddle.sticks == 0) {
-                        self.paddle.dom.removeClass('S');
+                    if (self.paddle.sticks > 0) {
+                        self.paddle.sticks--;
                     }
+                }
+                if (self.paddle.sticks == 0) {
+                    self.paddle.dom.removeClass('S');
                 }
             });
             startPlaylist();
@@ -442,7 +442,7 @@ function Bonus(startPoint, type) {
     };
 }
 Bonus.types = 'MSTFL';
-/** 
+/**  These are the power-ups from Arkanoid
  * S - Slow
  * F - Fast
  * C - Catch
@@ -523,8 +523,6 @@ function Ball(startPoint, velocity) {
 
     this.kill = function() {
         this.dom.hide();
-        var balls = game.balls;
-        var lives = game.lives;
         var idx = game.sprites.indexOf(this);
         if (idx > -1) {
             game.sprites.splice(idx, 1);
@@ -536,10 +534,10 @@ function Ball(startPoint, velocity) {
         if (game.balls.length > 0) {
             // remove multiball
             console.log('removing multiball');
-        } else if (game.balls.length == 0 && lives > 0) {
-            console.log('decreasing lives', lives, 'balls', game.balls.length);
-            lives--;
-            $(".lives-div").replaceWith(livesDisplay(lives));
+        } else if (game.balls.length == 0 && game.lives > 0) {
+            console.log('decreasing lives', game.lives, 'balls', game.balls.length);
+            game.lives--;
+            $(".lives-div").replaceWith(livesDisplay(game.lives));
             var paddle = game.paddle;
             var $paddle = paddle.dom;
             paddle.sticks = 1;
@@ -548,19 +546,19 @@ function Ball(startPoint, velocity) {
             ball = new Ball(startPos, new Point(0, 1));
             ball.stuck = true;
             ball.phitx = startPos.x - $paddle.offset().left;
-            balls.push(ball);
+            game.balls.push(ball);
             game.sprites.push(ball);
         } else {
-            console.log('you dead', lives, 'balls', balls.length);
+            console.log('you dead', game.lives, 'balls', game.balls.length);
             console.log("BAlLLLLLLLLLLLLLLLLLLLLLL DEAD!");
             $('.breakout-bonus').hide();
             $('#ball').hide();
             $("#level-heading").text("");
             //$("#level-heading").append("Game Over.  Final Score: " + score);
             $('#overlay').hide();
-            $("#level-heading").append("<a class='fa fa-twitter-square' style='text-decoration: none' href='https://twitter.com/intent/tweet?text=Got%20to%20Level%20" + level + "%20on%20%23BreakWTF' ></a> Game Over - " + score);
+            $("#level-heading").append("<a class='fa fa-twitter-square' style='text-decoration: none' href='https://twitter.com/intent/tweet?text=Got%20to%20Level%20" + game.level + "%20on%20%23BreakWTF' ></a> Game Over - " + game.score);
             $("#level-head-div").slideDown();
-            running = false;
+            game.running = false;
         }
     }
 
@@ -835,6 +833,13 @@ function main() {
 
 function nextLevel(level) {
     console.log(level, 'rows', rows.size());
+    for (var i = game.balls.length - 1; i > 0; i--) {
+        game.balls[i].kill();
+    }
+    if (game.balls.length > 0) {
+        var ball = game.balls[0];
+        game.moveBallToStartPos(ball);
+    }
     if (Math.ceil(rows.size() / 4) > level) {
         if (newMatrix) {
             $('.matrix-card').hide();
