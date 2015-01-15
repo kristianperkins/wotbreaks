@@ -308,6 +308,7 @@ function Bullet(startPoint) {
             if (hit) {
                 if ($b.hasClass("hotdeal")) {
                     $b.removeClass("hotdeal");
+
                 } else {
                     if (Math.random() < 0.4) {
                         // spawn power-up!
@@ -657,6 +658,10 @@ function Ball(startPoint, velocity) {
             if (hit) {
                 if ($b.hasClass("hotdeal")) {
                     $b.removeClass("hotdeal");
+                    if (self.speed == 600) {
+                        self.dom.addClass('fast');
+                    }
+                    self.speed = 900;
                 } else {
                     if (Math.random() < 0.4) {
                         // spawn power-up!
@@ -665,6 +670,10 @@ function Ball(startPoint, velocity) {
                         game.sprites.push(bonus);
                     }
                     // add to score
+                    if (self.speed > 600) {
+                        self.dom.removeClass('fast');
+                    }
+                    self.speed = 600;
                     game.score += +$b.text();
                     $(".breakout-score b").text(game.score);
                     b.hit = true;

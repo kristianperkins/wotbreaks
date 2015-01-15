@@ -38,6 +38,10 @@ body.static.w-refresh .wrapper-inner{
     transform: translateZ(0);
 }
 
+#ball.ball.fast {
+    background: radial-gradient(circle at 0px 0px, rgb(245, 123, 123), rgb(102, 7, 7));
+}
+
 #level-head-div{
     display: none;
     top: 0px;
