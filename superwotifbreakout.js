@@ -65,7 +65,7 @@ function Game() {
             console.log('RUNNING INIT');
             self._init = true;
             self.level = 0;
-            self.level = nextLevel(0);
+            self.nextLevel();
             self.prepareDom();
             self.paddle = new Paddle();
             self.ball = new Ball(new Point(10,10), new Point(0, 1));
@@ -186,6 +186,39 @@ function Game() {
         $(".w-header__inner.container").html('<a href="http://www.wotif.com/" class="w-logo w-logo--centered">Wotif.com</a><div class="breakout-score">SCORE <b>0</b></div><div class="breakout-level">LEVEL <b>1</b></div>')
         $(".w-header__inner.container").append(livesDisplay(self.lives));
     };
+
+    this.nextLevel = function () {
+        console.log(this.level, 'rows', rows.size());
+        for (var i = this.balls.length - 1; i > 0; i--) {
+            this.balls[i].kill();
+        }
+        if (this.balls.length > 0) {
+            var ball = this.balls[0];
+            this.moveBallToStartPos(ball);
+        }
+        if (Math.ceil(rows.size() / 4) > this.level) {
+            if (newMatrix) {
+                $('.matrix-card').hide();
+                rows.hide();
+                //$('.matrix-card').slice(level * 4, (level + 1) * 4).show();
+                $('.matrix__spacer').hide();
+            } else {
+                $('table.matrix-content tr:not(.grid-header)').hide();
+            }
+            rows.slice(this.level * 4, (this.level + 1) * 4).show();
+            this.level++;
+            $("#level-heading").text("Level " + this.level);
+            $(".breakout-level b").text(this.level);
+            $("#level-head-div").slideDown().delay(2000).slideUp();
+        } else {
+            $('.breakout-bonus').hide();
+            $('#ball').hide();
+            $("#level-heading").text("Congratulations, You Completed " + wotifConfig.groupMapName + " Region");
+            $("#level-head-div").slideDown();
+            running = false;
+            return this.level;
+        }
+    };
 }
 
 function getTopBound() {
@@ -288,7 +321,7 @@ function Bullet(startPoint) {
                     b.hit = true;
                     $b.attr('class', 'anim sold').html('SOLD');
                     if ($('tr.deals:visible td:not(.sold)').not('.summary').length == 0) {
-                        nextLevel();
+                        game.nextLevel();
                     }
 
                 }
@@ -359,7 +392,7 @@ function Bonus(startPoint, type) {
         }, 5000);
     };
     this.stickyBall = function() {
-        paddle.sticks = 5;
+        game.paddle.sticks = 5;
     };
     this.lazers = function() {
         var paddle = game.paddle;
@@ -637,7 +670,7 @@ function Ball(startPoint, velocity) {
                     b.hit = true;
                     $b.attr('class', 'anim sold').html('SOLD');
                     if ($('tr.deals:visible td:not(.sold)').not('.summary').length == 0) {
-                        nextLevel();
+                        game.nextLevel();
                     }
 
                 }
@@ -689,38 +722,6 @@ function Paddle() {
 }
 
 
-function nextLevel(level) {
-    console.log(level, 'rows', rows.size());
-    for (var i = game.balls.length - 1; i > 0; i--) {
-        game.balls[i].kill();
-    }
-    if (game.balls.length > 0) {
-        var ball = game.balls[0];
-        game.moveBallToStartPos(ball);
-    }
-    if (Math.ceil(rows.size() / 4) > level) {
-        if (newMatrix) {
-            $('.matrix-card').hide();
-            rows.hide();
-            //$('.matrix-card').slice(level * 4, (level + 1) * 4).show();
-            $('.matrix__spacer').hide();
-        } else {
-            $('table.matrix-content tr:not(.grid-header)').hide();
-        }
-        rows.slice(level * 4, (level + 1) * 4).show();
-        level++;
-        $("#level-heading").text("Level " + level);
-        $(".breakout-level b").text(level);
-        $("#level-head-div").slideDown().delay(2000).slideUp();
-    } else {
-        $('.breakout-bonus').hide();
-        $('#ball').hide();
-        $("#level-heading").text("Congratulations, You Completed " + wotifConfig.groupMapName + " Region");
-        $("#level-head-div").slideDown();
-        running = false;
-        return level;
-    }
-}
 
 function livesDisplay(lives) {
     var div = "<div id='lives-div' class='info lives-div'><ul class='starRating' data-rating='" + lives + "'>";
