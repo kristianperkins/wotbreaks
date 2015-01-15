@@ -1,20 +1,192 @@
+// nuke these
+var newMatrix = false;
 
-var startPos;
-var ball;
-var t0;
-var w;
-var $window;
-var running = true;
-var level = 0;
-var score = 0;
-var debugStep = false;
-var sprites = [];
-var balls = [];
-var bullets = [];
-var paddle;
-var lives = 3;
-var newMatrix = !wotifData.days
+
+var game; // ze game
 var break_loc = $('script[src*=jq]').attr('src').slice(0, -5);
+
+function Game() {
+    this.startPos;
+    this.ball;
+    this.t0;
+    this.w;
+    this.$window;
+    this.running = true;
+    this.level = 0;
+    this.score = 0;
+    this.debugStep = false;
+    this.sprites = [];
+    this.balls = [];
+    this.bullets = [];
+    this.paddle;
+    this.lives = 3;
+    this.newMatrix = !wotifData.days;
+    this._init = false;
+    var self = this;
+
+    this.getBallStartPos = function() {
+        var $paddle = this.paddle.dom;
+        var ballheight = 20; // look this up...
+        var pos = new Point($paddle.offset().left + $paddle.width() / 2.2, $paddle.offset().top - ballheight);
+        console.log('starting ball at', pos, 'while paddle top', $paddle.offset().top);
+        return pos;
+    };
+
+    this.moveBallToStartPos = function(ball) {
+        var startPos = this.getBallStartPos();
+        ball.stuck = true;
+        ball.phitx = this.paddle.dom.width() / 2.2;
+        ball.pos = startPos;
+        ball.dom.offset({left: startPos.x, top: startPos.y});
+    };
+
+
+    // game-loop body.
+    this.step = function(t1) {
+        var dt = ((t1 - self.t0) / 1000);
+        for (var i = 0; i < self.sprites.length; i++) {
+            self.sprites[i].update(dt);
+        }
+        self.t0 = t1;
+        if (self.running) {
+            window.requestAnimationFrame(self.step);
+        }
+    };
+
+
+    // one-time init for the Game
+    this.init = function() {
+        $('html, body').animate({
+            scrollTop: 0
+        }, 1500, function(e) {
+            if (self._init) {
+                return; //fml
+            }
+            console.log('RUNNING INIT');
+            self._init = true;
+            self.level = 0;
+            self.level = nextLevel(0);
+            self.prepareDom();
+            self.paddle = new Paddle();
+            self.ball = new Ball(new Point(10,10), new Point(0, 1));
+            self.moveBallToStartPos(self.ball);
+            self.balls.push(self.ball);
+            self.sprites.push(self.ball);
+
+            $(window).mousemove(function(e) {
+                var pwidth = self.paddle.dom.width();
+                var $paddle = self.paddle.dom;
+                $paddle.offset({left: e.pageX - pwidth / 2});
+                for (var i = 0; i < self.balls.length; i++) {
+                    var b = self.balls[i]
+                    if (b.stuck) {
+                        //var pleft = b.dom.offset().left - $paddle.offset().left;
+                        var phitx = b.phitx || 0;
+                        var bleft = e.pageX - pwidth / 2;
+                        var btop = $paddle.offset().top - b.height;
+                        b.dom.offset({
+                            left: bleft + phitx,
+                            top: btop
+                        });
+                        b.pos.x = bleft + phitx;
+                        b.pos.y = btop;
+                        console.log('paddletop:', $paddle.offset().top, 'balltop', b.dom.offset().top, 'bheight', b.height);
+                    }
+                }
+            });
+
+            $(window).mouseup(function(e) {
+                if (self.paddle.lazermode && self.bullets.length < 6) {
+                    var p = self.paddle.dom.offset();
+                    var bullet1 = new Bullet(new Point(p.left + 20, p.top));
+                    var bullet2 = new Bullet(new Point(p.left + self.paddle.dom.width() - 20, p.top));
+                    self.sprites.push(bullet1);
+                    self.sprites.push(bullet2);
+                    self.bullets.push(bullet1);
+                    self.bullets.push(bullet2);
+                }
+                for (var i = 0; i < self.balls.length; i++) {
+                    var b = self.balls[i];
+                    if (b.stuck) {
+                        b.stuck = false;
+                    }
+                    if (self.paddle.sticks > 0) {
+                        self.paddle.sticks--;
+                    }
+                }
+                if (self.paddle.sticks == 0) {
+                    self.paddle.dom.removeClass('S');
+                }
+            });
+            startPlaylist();
+            t0 = window.performance.now();
+            window.requestAnimationFrame(self.step);
+            //step(0);
+        });
+
+        // cheats for bonuses
+        $(document).keydown(function(e) {
+            console.log(e);
+            var char = String.fromCharCode(e.which);
+            if (Bonus.types.indexOf(char) > -1) {
+                game.sprites.push(new Bonus(new Point($(window).width() / 2, 100), char));
+            }
+        });
+    }; // init
+
+
+    // remove and add some elements for the game.
+    this.prepareDom = function() {
+        // styles
+        $("<link/>", {
+           rel: "stylesheet",
+           type: "text/css",
+           id: "yeah",
+           href: break_loc + "/superwotifbreakout.css"
+        }).appendTo("head");
+        $("<link/>", {
+           rel: "stylesheet",
+           type: "text/css",
+            id: "font-awesome-stylesheet",
+           href: "http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+        }).appendTo("head");
+        $("<link/>", {
+           rel: "stylesheet",
+           type: "text/css",
+            id: "opensanscondensed-stylesheet",
+           href: "http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700"
+        }).appendTo("head");
+
+
+        // remove some elements.
+        $('div.results-search').slideUp('slow');
+        $('#map-button').slideUp('slow');
+        $('.w-toolbar').slideUp('slow');
+        $('.results-header').slideUp('slow');
+        $('#hotel-deals').slideUp('slow');
+        $('.results-count').slideUp('slow');
+        $('#all-filters').slideUp('slow'); // new matrix specific
+        $('body').height(window.innerHeight);
+        $(window).resize(function() {
+            $('body').height(window.innerHeight);
+        });
+        $(document).css({
+            overflow: 'hide'
+        });
+        $(".shortlist-summary").hide();
+        $('.w-footer').hide();
+        $('pre').hide();  //  What is this thing?
+        var hheight = $('.w-header').height();
+
+
+        // add level, scoreboard, lives
+        $("<div id='level-head-div'><h1 id='level-heading'>Level X</h1></div>").appendTo("body");
+        $('<div id="overlay" unselectable="on" onselectstart="return false;">:</div>').appendTo('body');
+        $('.wrapper-outer').css('height', '100%').css('height', '-= ' + hheight + 'px');  // XXX: This won't work with resize!
+        $(".w-header__inner.container").html('<a href="http://www.wotif.com/" class="w-logo w-logo--centered">Wotif.com</a><div class="breakout-score">SCORE <b>0</b></div><div class="breakout-level">LEVEL <b>1</b></div>')
+        $(".w-header__inner.container").append(livesDisplay(self.lives));
+    };
+}
 
 function getTopBound() {
     if (newMatrix) {
@@ -64,14 +236,14 @@ function Bullet(startPoint) {
     };
 
     this.kill = function() {
-        var idx = sprites.indexOf(this);
+        var idx = game.sprites.indexOf(this);
         if (idx > -1) {
-            sprites.splice(idx, 1);
+            game.sprites.splice(idx, 1);
             this.dom.hide();
         }
-        idx = bullets.indexOf(this);
+        idx = game.bullets.indexOf(this);
         if (idx > -1) {
-            bullets.splice(idx, 1);
+            game.bullets.splice(idx, 1);
         }
     };
 
@@ -108,11 +280,11 @@ function Bullet(startPoint) {
                         // spawn power-up!
                         var bonus = new Bonus(curr);
 
-                        sprites.push(bonus);
+                        game.sprites.push(bonus);
                     }
                     // add to score
-                    score += +$b.text();
-                    $(".breakout-score b").text(score);
+                    game.score += +$b.text();
+                    $(".breakout-score b").text(game.score);
                     b.hit = true;
                     $b.attr('class', 'anim sold').html('SOLD');
                     if ($('tr.deals:visible td:not(.sold)').not('.summary').length == 0) {
@@ -146,7 +318,7 @@ function Bonus(startPoint, type) {
 
 
     this.collidePaddle = function(curr, next) {
-        var $paddle = paddle.dom;
+        var $paddle = game.paddle.dom;
         var PI = Math.PI;
         var off = $paddle.offset();
         var w = $paddle.width();
@@ -154,10 +326,11 @@ function Bonus(startPoint, type) {
             // power up hit the paddle
             this.startBonus();
             this.kill();
-            paddle.dom.addClass(this.type);
+            game.paddle.dom.addClass(this.type);
         }
     }
     this.fatPaddle = function() {
+        var paddle = game.paddle;
         var maxWidth = 350;
         var $paddle = paddle.dom;
         window.clearTimeout(this.fatt);
@@ -170,9 +343,10 @@ function Bonus(startPoint, type) {
         }, 10000);
     };
     this.stickyBall = function() {
-        paddle.sticks = 5;
+        game.paddle.sticks = 5;
     };
     this.thinPaddle = function() {
+        var paddle = game.paddle;
         var minWidth = 100;
         var $paddle = paddle.dom;
         window.clearTimeout(this.killit);
@@ -188,6 +362,7 @@ function Bonus(startPoint, type) {
         paddle.sticks = 5;
     };
     this.lazers = function() {
+        var paddle = game.paddle;
         paddle.lazermode = true;
         window.clearTimeout(this.lzr);
         var self = this;
@@ -197,21 +372,21 @@ function Bonus(startPoint, type) {
         }, 5000);
     };
     this.multiBall = function() {
-        var b0 = balls[0];
-        var bb = balls.length;
+        var b0 = game.balls[0];
+        var bb = game.balls.length;
         for (var i = 3; i > bb; i--) {
             var x = b0.v.x + .02 * i;
             var y = b0.v.y;
             var b = new Ball(new Point(b0.pos.x + i * 40, b0.pos.y), new Point(x, y));
-            sprites.push(b);
-            balls.push(b);
+            game.sprites.push(b);
+            game.balls.push(b);
         }
     };
 
     this.kill = function() {
-        var idx = sprites.indexOf(this);
+        var idx = game.sprites.indexOf(this);
         if (idx > -1) {
-            sprites.splice(idx, 1);
+            game.sprites.splice(idx, 1);
             this.dom.hide();
         }
     }
@@ -268,7 +443,7 @@ function Bonus(startPoint, type) {
     };
 }
 Bonus.types = 'MSTFL';
-/** 
+/**  These are the power-ups from Arkanoid
  * S - Slow
  * F - Fast
  * C - Catch
@@ -302,7 +477,7 @@ function Ball(startPoint, velocity) {
     this.dom.offset({top: startPoint.y, left: startPoint.x});
     this.dom.appendTo("body");
     this.width = this.dom.width();
-    this.height = this.dom.height();
+    this.height = 20; // XXX: fixme
     this.pos = new Point(startPoint.x, startPoint.y);
 
     this.update = function(dt) {
@@ -349,21 +524,22 @@ function Ball(startPoint, velocity) {
 
     this.kill = function() {
         this.dom.hide();
-        var idx = sprites.indexOf(this);
+        var idx = game.sprites.indexOf(this);
         if (idx > -1) {
-            sprites.splice(idx, 1);
+            game.sprites.splice(idx, 1);
         }
-        idx = balls.indexOf(this);
+        idx = game.balls.indexOf(this);
         if (idx > -1) {
-            balls.splice(idx, 1);
+            game.balls.splice(idx, 1);
         }
-        if (balls.length > 0) {
+        if (game.balls.length > 0) {
             // remove multiball
             console.log('removing multiball');
-        } else if (balls.length == 0 && lives > 0) {
-            console.log('decreasing lives', lives, 'balls', balls.length);
-            lives--;
-            $(".lives-div").replaceWith(livesDisplay(lives));
+        } else if (game.balls.length == 0 && game.lives > 0) {
+            console.log('decreasing lives', game.lives, 'balls', game.balls.length);
+            game.lives--;
+            $(".lives-div").replaceWith(livesDisplay(game.lives));
+            var paddle = game.paddle;
             var $paddle = paddle.dom;
             paddle.sticks = 1;
             var ballheight = 20;
@@ -371,28 +547,29 @@ function Ball(startPoint, velocity) {
             ball = new Ball(startPos, new Point(0, 1));
             ball.stuck = true;
             ball.phitx = startPos.x - $paddle.offset().left;
-            balls.push(ball);
-            sprites.push(ball);
+            game.balls.push(ball);
+            game.sprites.push(ball);
         } else {
-            console.log('you dead', lives, 'balls', balls.length);
+            console.log('you dead', game.lives, 'balls', game.balls.length);
             console.log("BAlLLLLLLLLLLLLLLLLLLLLLL DEAD!");
             $('.breakout-bonus').hide();
             $('#ball').hide();
             $("#level-heading").text("");
             //$("#level-heading").append("Game Over.  Final Score: " + score);
             $('#overlay').hide();
-            $("#level-heading").append("<a class='fa fa-twitter-square' style='text-decoration: none' href='https://twitter.com/intent/tweet?text=Got%20to%20Level%20" + level + "%20on%20%23BreakWTF' ></a> Game Over - " + score);
+            $("#level-heading").append("<a class='fa fa-twitter-square' style='text-decoration: none' href='https://twitter.com/intent/tweet?text=Got%20to%20Level%20" + game.level + "%20on%20%23BreakWTF' ></a> Game Over - " + game.score);
             $("#level-head-div").slideDown();
-            running = false;
+            game.running = false;
         }
     }
 
 
     this.collidePaddle = function(curr, next) {
         var PI = Math.PI;
-        var $paddle = paddle.dom;
+        var $paddle = game.paddle.dom;
         var off = $paddle.offset();
         var w = $paddle.width();
+        var paddle = game.paddle;
         if (curr.y + this.height <= off.top && next.y + this.height > off.top  && next.x > off.left && next.x < off.left + w) {
             // reflect x based on distance from the midpoint
             this.phitx = next.x - off.left;
@@ -452,11 +629,11 @@ function Ball(startPoint, velocity) {
                         // spawn power-up!
                         var bonus = new Bonus(curr);
 
-                        sprites.push(bonus);
+                        game.sprites.push(bonus);
                     }
                     // add to score
-                    score += +$b.text();
-                    $(".breakout-score b").text(score);
+                    game.score += +$b.text();
+                    $(".breakout-score b").text(game.score);
                     b.hit = true;
                     $b.attr('class', 'anim sold').html('SOLD');
                     if ($('tr.deals:visible td:not(.sold)').not('.summary').length == 0) {
@@ -478,7 +655,7 @@ function startPlaylist() {
 	// var _stop = document.getElementById("stop"); TODO: mute button
 
 	function playNext() {
-		playa.src = break_loc+playlist[current];
+		playa.src =break_loc + playlist[current];
 		playa.play();
 
 		current += 1;
@@ -517,7 +694,7 @@ function main() {
     //
     // initialise dom and scroll top etc
     //
-    var init = false;
+    var inited = false;
     $('html, body').animate({
         //scrollTop: $("form.dateForm").offset().top
         scrollTop: 0
@@ -533,7 +710,7 @@ function main() {
 
         // new matrix specific
         $('#all-filters').slideUp('slow');
-        if (init) {
+        if (inited) {
             return; //fml
         }
         $('body').height(window.innerHeight);
@@ -567,14 +744,15 @@ function main() {
         });
 
         $(window).mouseup(function(e) {
+            var paddle = self.paddle;
             if (paddle.lazermode && bullets.length < 6) {
                 var p = paddle.dom.offset();
                 var bullet1 = new Bullet(new Point(p.left + 20, p.top));
                 var bullet2 = new Bullet(new Point(p.left + paddle.dom.width() - 20, p.top));
-                sprites.push(bullet1);
-                sprites.push(bullet2);
-                bullets.push(bullet1);
-                bullets.push(bullet2);
+                self.sprites.push(bullet1);
+                self.sprites.push(bullet2);
+                self.bullets.push(bullet1);
+                self.bullets.push(bullet2);
             }
             if (paddle.sticks) {
                 for (var i = 0; i < balls.length; i++) {
@@ -619,18 +797,15 @@ function main() {
         $(".w-header__inner.container").html('<a href="http://www.wotif.com/" class="w-logo w-logo--centered">Wotif.com</a><div class="breakout-score">SCORE <b>0</b></div><div class="breakout-level">LEVEL <b>1</b></div>')
         $(".w-header__inner.container").append(livesDisplay(lives));
 
-
-        console.log("lIOADEDED!");
-        t0 = window.performance.now();
-        window.requestAnimationFrame(step);
-        //step(0);
+        this.t0 = window.performance.now();
+        window.requestAnimationFrame(this.step);
     });
 
     $("<link/>", {
        rel: "stylesheet",
        type: "text/css",
         id: "yeah",
-       href: break_loc + "/superwotifbreakout.css"
+       href: "http://localhost:8000/superwotifbreakout.css"
     }).appendTo("head");
     $("<link/>", {
        rel: "stylesheet",
@@ -657,8 +832,15 @@ function main() {
     });
 }
 
-function nextLevel() {
+function nextLevel(level) {
     console.log(level, 'rows', rows.size());
+    for (var i = game.balls.length - 1; i > 0; i--) {
+        game.balls[i].kill();
+    }
+    if (game.balls.length > 0) {
+        var ball = game.balls[0];
+        game.moveBallToStartPos(ball);
+    }
     if (Math.ceil(rows.size() / 4) > level) {
         if (newMatrix) {
             $('.matrix-card').hide();
@@ -679,11 +861,11 @@ function nextLevel() {
         $("#level-heading").text("Congratulations, You Completed " + wotifConfig.groupMapName + " Region");
         $("#level-head-div").slideDown();
         running = false;
+        return level;
     }
 }
 
 function livesDisplay(lives) {
-    console.log('writing lives div');
     var div = "<div id='lives-div' class='info lives-div'><ul class='starRating' data-rating='" + lives + "'>";
     for (var i = 0; i < 5; i++) {
         if (i < lives) {
@@ -696,17 +878,8 @@ function livesDisplay(lives) {
     return div;
 };
 
-function step(t1) {
-    var dt = ((t1 - t0) / 1000);
-    for (var i = 0; i < sprites.length; i++) {
-        sprites[i].update(dt);
-    }
-    t0 = t1;
-    if (running) {
-        window.requestAnimationFrame(step);
-    }
-}
-
 if(!window.broken) {
-    main();
+    game = new Game();
+    game.init();
+    //main();
 }
