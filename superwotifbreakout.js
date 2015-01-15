@@ -737,6 +737,7 @@ function livesDisplay(lives) {
 };
 
 if(!window.broken) {
+    window.broken = true;
     game = new Game();
     game.init();
 }
