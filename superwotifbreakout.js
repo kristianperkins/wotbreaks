@@ -234,16 +234,16 @@ function Game() {
         '</li> ' + 
         '<li> ' + 
             '"Hugs not Bugs" <span class="name">Karl</span> &mdash; bugs and UXI ' + 
-             '<a href="au.linkedin.com/pub/karl-ringrose/2b/92/87a" style="text-decoration:none;"><img src="https://static.licdn.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png" title="Hire me!" alt="Hire me!"></a> ' + 
+             '<a href="http://au.linkedin.com/pub/karl-ringrose/2b/92/87a" style="text-decoration:none;"><img src="https://static.licdn.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png" title="Hire me!" alt="Hire me!"></a> ' + 
            '  ' + 
         '</li> ' + 
         '<li> ' + 
             '<span class="name">Bihle</span> &mdash; Mad Dog DJ ' + 
-            '<a href="au.linkedin.com/in/benihle" style="text-decoration:none;"><img src="https://static.licdn.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png" title="Hire me!" alt="Hire me!"></a> ' + 
+            '<a href="http://au.linkedin.com/in/benihle" style="text-decoration:none;"><img src="https://static.licdn.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png" title="Hire me!" alt="Hire me!"></a> ' + 
         '</li> ' + 
         '<li> ' + 
             '<span class="name">OctoKatie</span> &mdash; Beta testing and insanity checker ' + 
-            '<a href="au.linkedin.com/pub/kate-gamblin/7a/513/b43" style="text-decoration:none;"><img src="https://static.licdn.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png" title="Hire me!" alt="Hire me!"></a> ' + 
+            '<a href="http://au.linkedin.com/pub/kate-gamblin/7a/513/b43" style="text-decoration:none;"><img src="https://static.licdn.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png" title="Hire me!" alt="Hire me!"></a> ' + 
         '</li> ' + 
     '</ul> ' + 
     '<hr> ' + 
