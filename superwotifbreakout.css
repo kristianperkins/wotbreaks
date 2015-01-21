@@ -1,8 +1,5 @@
 
 /*@import "icomoon-style.css";*/
-.wrapper-outer{
-    height:100%!important;
-}
 body.static.w-refresh .wrapper-inner{
     height:100%!important;
     background:#e8e8e8!important;
