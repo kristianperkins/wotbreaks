@@ -9,6 +9,33 @@ body.static.w-refresh .wrapper-inner{
     padding: 0!important;
 }
 
+#team {
+    font-family: "Avenir Next",Avenir,"Open Sans",Helvetica,Arial,sans-serif;
+    margin: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: inline;
+    font-weight: 100;
+    color: white;
+    font-size: 34px;
+}
+#team h3 {
+    font-weight: 100;
+    font-size: 44px;
+}
+#team hr {
+    margin: 50px 35%;
+}
+#team li {
+    margin: 7px 0;
+}
+
+#team img {
+    vertical-align: sub;
+}
+#team .name {
+    color: yellow;
+}
 
 .gradient-overlay{
     width: 94.5%;
@@ -53,6 +80,17 @@ body.static.w-refresh .wrapper-inner{
     text-align: center;
     z-index: 1000001;
     padding-top: 20%;
+}
+
+#team {
+    font-family: "Avenir Next",Avenir,"Open Sans",Helvetica,Arial,sans-serif;
+    margin: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: inline;
+    font-weight: 100;
+    color: white;
+    font-size: 44px;
 }
 
 #level-heading{

@@ -6,11 +6,10 @@ var game; // ze game
 var break_loc = $('script[src*=jq]').attr('src').slice(0, -5);
 
 function Game() {
-    this.startPos;
-    this.ball;
-    this.t0;
-    this.w;
-    this.$window;
+    this.startPos = null;
+    this.ball = null;
+    this.t0 = null;
+    this.w = null;
     this.running = true;
     this.level = 0;
     this.score = 0;
@@ -22,7 +21,7 @@ function Game() {
     this.lives = 3;
     this.newMatrix = !wotifData.days;
     this._init = false;
-    var self = this;
+    var self = this;  // thanks, javascript
 
     this.getBallStartPos = function() {
         var $paddle = this.paddle.dom;
@@ -218,6 +217,46 @@ function Game() {
             running = false;
             return this.level;
         }
+    };
+
+    this.team = '<div id="team"> ' + 
+    '<hr> ' + 
+    '<h3>The Team </h3> ' + 
+    '<ul> ' + 
+        '<li> ' + 
+        '"I\'m not a hipster" <span class="name">Sweeno</span> &mdash; codez ' + 
+            '<a href="http://au.linkedin.com/pub/jay-sweeney/75/268/4" style="text-decoration:none;"><img src="https://static.licdn.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png" title="Hire me!" alt="Hire me!"></a> ' + 
+           '  ' + 
+        '</li> ' + 
+        '<li> ' + 
+            '"The Reverend" <span class="name">KP</span> &mdash; codez ' + 
+            '<a href="https://www.linkedin.com/in/khperkins" style="text-decoration:none;"><img src="https://static.licdn.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png" title="Hire me!" alt="Hire me!"></a> ' + 
+        '</li> ' + 
+        '<li> ' + 
+            '"Hugs not Bugs" <span class="name">Karl</span> &mdash; bugs and UXI ' + 
+             '<a href="au.linkedin.com/pub/karl-ringrose/2b/92/87a" style="text-decoration:none;"><img src="https://static.licdn.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png" title="Hire me!" alt="Hire me!"></a> ' + 
+           '  ' + 
+        '</li> ' + 
+        '<li> ' + 
+            '<span class="name">Bihle</span> &mdash; Mad Dog DJ ' + 
+            '<a href="au.linkedin.com/in/benihle" style="text-decoration:none;"><img src="https://static.licdn.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png" title="Hire me!" alt="Hire me!"></a> ' + 
+        '</li> ' + 
+        '<li> ' + 
+            '<span class="name">OctoKatie</span> &mdash; Beta testing and insanity checker ' + 
+            '<a href="au.linkedin.com/pub/kate-gamblin/7a/513/b43" style="text-decoration:none;"><img src="https://static.licdn.com/scds/common/u/images/logos/linkedin/logo_in_nav_44x36.png" title="Hire me!" alt="Hire me!"></a> ' + 
+        '</li> ' + 
+    '</ul> ' + 
+    '<hr> ' + 
+'</div> ';
+    this.gameOver = function() {
+            $('.breakout-bonus').hide();
+            $('#ball').hide();
+            $("#level-heading").text("");
+            $('#overlay').hide();
+            $("#level-heading").append("<a id='twit' class='fa fa-twitter-square' style='text-decoration: none' href='https://twitter.com/intent/tweet?text=Got%20to%20Level%20" + game.level + "%20on%20%23BreakWTF' ></a> Game Over - " + game.score);
+            $("#level-head-div").append(this.team);
+            $("#level-head-div").slideDown();
+            game.running = false;
     };
 }
 
@@ -584,16 +623,16 @@ function Ball(startPoint, velocity) {
             game.balls.push(ball);
             game.sprites.push(ball);
         } else {
-            console.log('you dead', game.lives, 'balls', game.balls.length);
-            console.log("BAlLLLLLLLLLLLLLLLLLLLLLL DEAD!");
-            $('.breakout-bonus').hide();
-            $('#ball').hide();
-            $("#level-heading").text("");
-            //$("#level-heading").append("Game Over.  Final Score: " + score);
-            $('#overlay').hide();
-            $("#level-heading").append("<a class='fa fa-twitter-square' style='text-decoration: none' href='https://twitter.com/intent/tweet?text=Got%20to%20Level%20" + game.level + "%20on%20%23BreakWTF' ></a> Game Over - " + game.score);
-            $("#level-head-div").slideDown();
-            game.running = false;
+            //$('.breakout-bonus').hide();
+            //$('#ball').hide();
+            //$("#level-heading").text("");
+            //$('#overlay').hide();
+            //$("#level-heading").append("<a id='twit' class='fa fa-twitter-square' style='text-decoration: none' href='https://twitter.com/intent/tweet?text=Got%20to%20Level%20" + game.level + "%20on%20%23BreakWTF' ></a> Game Over - " + game.score);
+            //$.get('credits.html').success(function(data) {
+                //$("#twit").append(data);
+            //});
+            //$("#level-head-div").slideDown();
+            //game.running = false;
         }
     }
 
