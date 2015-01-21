@@ -623,16 +623,7 @@ function Ball(startPoint, velocity) {
             game.balls.push(ball);
             game.sprites.push(ball);
         } else {
-            //$('.breakout-bonus').hide();
-            //$('#ball').hide();
-            //$("#level-heading").text("");
-            //$('#overlay').hide();
-            //$("#level-heading").append("<a id='twit' class='fa fa-twitter-square' style='text-decoration: none' href='https://twitter.com/intent/tweet?text=Got%20to%20Level%20" + game.level + "%20on%20%23BreakWTF' ></a> Game Over - " + game.score);
-            //$.get('credits.html').success(function(data) {
-                //$("#twit").append(data);
-            //});
-            //$("#level-head-div").slideDown();
-            //game.running = false;
+            game.gameOver();
         }
     }
 
